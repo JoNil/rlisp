@@ -1,6 +1,8 @@
 Rlisp
 =====
 
+[![Build Status](https://travis-ci.org/JoNil/rlisp.png?branch=master)](https://travis-ci.org/JoNil/rlisp)
+
 Rlisp is a small lisp like language written in Rust. It's based on the book [Build Your Own Lisp](http://www.buildyourownlisp.com/).
 
 Todo
