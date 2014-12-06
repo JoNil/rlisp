@@ -1,0 +1,7 @@
+[package]
+
+name = "readline"
+version = "0.0.1"
+authors = ["Jonathan Nilsson <lord.jonil@gmail.com>"]
+links = "readline"
+build = "build.rs"

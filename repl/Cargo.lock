@@ -1,0 +1,68 @@
+[root]
+name = "repl"
+version = "0.0.1"
+dependencies = [
+ "readline 0.0.1",
+ "rlisp 0.0.1",
+]
+
+[[package]]
+name = "gcc"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "mpc"
+version = "0.0.1"
+
+[[package]]
+name = "phf"
+version = "0.1.0"
+source = "git+https://github.com/sfackler/rust-phf.git#ba09f5aa0e0a191c5995e2f6bf502f1232863bb2"
+dependencies = [
+ "phf_shared 0.1.0 (git+https://github.com/sfackler/rust-phf.git)",
+]
+
+[[package]]
+name = "phf_mac"
+version = "0.1.0"
+source = "git+https://github.com/sfackler/rust-phf.git#ba09f5aa0e0a191c5995e2f6bf502f1232863bb2"
+dependencies = [
+ "phf_shared 0.1.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "time 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "phf_shared"
+version = "0.1.0"
+source = "git+https://github.com/sfackler/rust-phf.git#ba09f5aa0e0a191c5995e2f6bf502f1232863bb2"
+dependencies = [
+ "xxhash 0.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "readline"
+version = "0.0.1"
+
+[[package]]
+name = "rlisp"
+version = "0.0.1"
+dependencies = [
+ "mpc 0.0.1",
+ "phf 0.1.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_mac 0.1.0 (git+https://github.com/sfackler/rust-phf.git)",
+]
+
+[[package]]
+name = "time"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "gcc 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "xxhash"
+version = "0.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+

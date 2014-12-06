@@ -1,0 +1,11 @@
+[package]
+
+name = "repl"
+version = "0.0.1"
+authors = ["Jonathan Nilsson <lord.jonil@gmail.com>"]
+
+[dependencies.readline]
+path = "../readline"
+
+[dependencies.rlisp]
+path = "../rlisp"
