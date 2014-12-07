@@ -209,7 +209,7 @@ fn test_rlisp() {
  }
 
 #[test]
-fn test_elipsis_emty_arg_list() {
+fn test_elipsis_empty_arg_list() {
     let mut rlisp = Rlisp::new();
 
     assert_eq!(rlisp.execute("(def {a ...} {head (list ...)})"), "()".to_string());
