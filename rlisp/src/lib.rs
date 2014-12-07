@@ -70,6 +70,15 @@ fn apply(env: Environment, procedure: &Cell, args: &[Cell]) -> Cell {
                 }
             }
 
+            if evaled_args.len() == 0 {            
+                if let Some(&Cell::Symbol(ref s)) = lambda.arguments.get(0) {
+                    if s[] == "..." {
+                        sub_env.insert(s, &Cell::Qexpr(Vec::new()));
+                        found_elipsis = true;
+                    }
+                }
+            }
+
             if evaled_args.len() == lambda.arguments.len() || found_elipsis {
                 eval(sub_env.clone(), &Cell::Sexpr(lambda.body.clone()))
             } else if evaled_args.len() < lambda.arguments.len() {
@@ -199,7 +208,16 @@ fn test_rlisp() {
     assert_eq!(rlisp.execute("(elipse 1 2 3 4 5)"), "{1 2 3 4 5}".to_string());
  }
 
- #[test]
+#[test]
+fn test_elipsis_emty_arg_list() {
+    let mut rlisp = Rlisp::new();
+
+    assert_eq!(rlisp.execute("(def {a ...} {head (list ...)})"), "()".to_string());
+
+    assert_eq!(rlisp.execute("(a)"), "{}".to_string());
+}
+
+#[test]
 fn test_curried_builtin() {
     let mut rlisp = Rlisp::new();
 
