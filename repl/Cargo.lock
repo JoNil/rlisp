@@ -9,33 +9,41 @@ dependencies = [
 [[package]]
 name = "gcc"
 version = "0.1.0"
+source = "git+https://github.com/alexcrichton/gcc-rs#3caf7309ef72644cd56a9d3a6f515ae553683176"
+
+[[package]]
+name = "gcc"
+version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "mpc"
 version = "0.0.1"
+dependencies = [
+ "gcc 0.1.0 (git+https://github.com/alexcrichton/gcc-rs)",
+]
 
 [[package]]
 name = "phf"
-version = "0.1.0"
-source = "git+https://github.com/sfackler/rust-phf.git#ba09f5aa0e0a191c5995e2f6bf502f1232863bb2"
+version = "0.2.0"
+source = "git+https://github.com/sfackler/rust-phf.git#4546f51fccbd56ddf1214fe232db8926d9f471de"
 dependencies = [
- "phf_shared 0.1.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_shared 0.2.0 (git+https://github.com/sfackler/rust-phf.git)",
 ]
 
 [[package]]
 name = "phf_mac"
-version = "0.1.0"
-source = "git+https://github.com/sfackler/rust-phf.git#ba09f5aa0e0a191c5995e2f6bf502f1232863bb2"
+version = "0.2.0"
+source = "git+https://github.com/sfackler/rust-phf.git#4546f51fccbd56ddf1214fe232db8926d9f471de"
 dependencies = [
- "phf_shared 0.1.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_shared 0.2.0 (git+https://github.com/sfackler/rust-phf.git)",
  "time 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "phf_shared"
-version = "0.1.0"
-source = "git+https://github.com/sfackler/rust-phf.git#ba09f5aa0e0a191c5995e2f6bf502f1232863bb2"
+version = "0.2.0"
+source = "git+https://github.com/sfackler/rust-phf.git#4546f51fccbd56ddf1214fe232db8926d9f471de"
 dependencies = [
  "xxhash 0.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -49,8 +57,8 @@ name = "rlisp"
 version = "0.0.1"
 dependencies = [
  "mpc 0.0.1",
- "phf 0.1.0 (git+https://github.com/sfackler/rust-phf.git)",
- "phf_mac 0.1.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf 0.2.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_mac 0.2.0 (git+https://github.com/sfackler/rust-phf.git)",
 ]
 
 [[package]]
