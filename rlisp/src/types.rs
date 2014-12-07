@@ -29,10 +29,10 @@ pub enum Type {
     OrT(&'static Type, &'static Type),
 }
 
-struct Arity {
-    requierd: i32,
-    optional: i32,
-    elipsis: bool,
+pub struct Arity {
+    pub requierd: i32,
+    pub optional: i32,
+    pub elipsis: bool,
 }
 
 impl Type {
@@ -110,7 +110,7 @@ impl fmt::Show for Type {
     }
 }
 
-fn get_arity(argument_types: &[Type]) -> Arity {
+pub fn get_arity(argument_types: &[Type]) -> Arity {
     let mut arity = Arity {
         requierd: 0,
         optional: 0,
@@ -153,16 +153,29 @@ fn validate_inner(argument_types: &[Type], args: &[cell::Cell]) -> Option<String
     let mut arg_type = arg_type_iter.next().expect("Internal error");
 
     for (i, arg) in args.iter().enumerate() {
-        if let (&cell::Cell::Sexpr(ref v), &SexprT(ref vt)) = (arg, arg_type) {
-            if let Some(e) = validate_inner(vt[], v[]) {
-                return Some(format!("argument list at {}: {}", i+1, e));
-            }
-        }
 
-        if let (&cell::Cell::Qexpr(ref v), &QexprT(ref vt)) = (arg, arg_type) {
-            if let Some(e) = validate_inner(vt[], v[]) {
-                return Some(format!("argument list at {}: {}", i+1, e));
-            }
+        match (arg, arg_type) {
+            (&cell::Cell::Sexpr(ref v), &SexprT(ref vt)) => {
+                if let Some(e) = validate_inner(vt[], v[]) {
+                    return Some(format!("argument list at {}: {}", i+1, e));
+                }
+            },
+            (&cell::Cell::Sexpr(ref v), &RSexprT(ref vt)) => {
+                if let Some(e) = validate_inner(vt[], v[]) {
+                    return Some(format!("argument list at {}: {}", i+1, e));
+                }
+            },
+            (&cell::Cell::Qexpr(ref v), &QexprT(ref vt)) => {
+                if let Some(e) = validate_inner(vt[], v[]) {
+                    return Some(format!("argument list at {}: {}", i+1, e));
+                }
+            },
+            (&cell::Cell::Qexpr(ref v), &RQexprT(ref vt)) => {
+                if let Some(e) = validate_inner(vt[], v[]) {
+                    return Some(format!("argument list at {}: {}", i+1, e));
+                }
+            },
+            (_, _) => (),
         }
 
         if !arg.is_type(arg_type) {
@@ -170,8 +183,7 @@ fn validate_inner(argument_types: &[Type], args: &[cell::Cell]) -> Option<String
                                 i+1, arg.get_type().to_string(), arg_type));
         }
 
-        if let &ElipsisT(_) = arg_type {
-        } else {
+        if let &ElipsisT(_) = arg_type {} else {
             arg_type = match arg_type_iter.next() {
                 Some(t) => t,
                 None    => break,

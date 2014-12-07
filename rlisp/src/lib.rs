@@ -11,7 +11,7 @@ extern crate phf_mac;
 #[cfg(test)]
 extern crate test;
 
-use cell::{Cell, LambdaSpec};
+use cell::{Cell, CurriedBuiltinSpec, LambdaSpec};
 use environment::Environment;
 use parser::Parser;
 
@@ -73,23 +73,55 @@ fn apply(env: Environment, procedure: &Cell, args: &[Cell]) -> Cell {
             if evaled_args.len() == lambda.arguments.len() || found_elipsis {
                 eval(sub_env.clone(), &Cell::Sexpr(lambda.body.clone()))
             } else if evaled_args.len() < lambda.arguments.len() {
-                Cell::Lambda(box LambdaSpec {
-                    arguments:   lambda.arguments[evaled_args.len()..].to_vec(),
-                    body:        lambda.body.clone(),
-                    environment: sub_env.clone(),
-                })
+                if evaled_args.len() == 0 {
+                    Cell::Error(format!("{} got no arguments", procedure))
+                } else {
+                    Cell::Lambda(box LambdaSpec {
+                        arguments:   lambda.arguments[evaled_args.len()..].to_vec(),
+                        body:        lambda.body.clone(),
+                        environment: sub_env.clone(),
+                    })
+                }
             } else {
                 Cell::Error(format!("{} got to many arguments expected {} got {}",
                                     procedure, lambda.arguments.len(), evaled_args.len()))
             }
         },
         &Cell::Builtin(builtin) => {
-            if let Some(e) = types::validate(builtin, evaled_args[]) {
-                return Cell::Error(e);
-            }
+            let arity = types::get_arity(builtin.argument_types);
 
-            (builtin.func)(env, evaled_args[])
-        }
+            if evaled_args.len() as i32 >= arity.requierd {
+                if let Some(e) = types::validate(builtin, evaled_args[]) {
+                    return Cell::Error(e);
+                }
+
+                (builtin.func)(env, evaled_args[])
+            } else {
+                Cell::CurriedBuiltin(box CurriedBuiltinSpec {
+                    builtin: builtin,
+                    bound_args: evaled_args,
+                })
+            }            
+        },
+        &Cell::CurriedBuiltin(box ref cb) => {
+            let arity = types::get_arity(cb.builtin.argument_types);
+            let mut evaled_and_bound_args = Vec::new();
+            evaled_and_bound_args.push_all(cb.bound_args[]);
+            evaled_and_bound_args.push_all(evaled_args[]);
+
+            if evaled_and_bound_args.len() as i32 >= arity.requierd {
+                if let Some(e) = types::validate(cb.builtin, evaled_and_bound_args[]) {
+                    return Cell::Error(e);
+                }
+
+                (cb.builtin.func)(env, evaled_and_bound_args[])
+            } else {
+                Cell::CurriedBuiltin(box CurriedBuiltinSpec {
+                    builtin: cb.builtin,
+                    bound_args: evaled_and_bound_args,
+                })
+            }            
+        },
         _ => Cell::Error(format!("{} is not a procedure, is {}", *procedure, procedure.get_type().to_string())),
     }
 }
@@ -123,10 +155,10 @@ fn first_error(c: &[Cell]) -> Option<&Cell> {
 }
 
 #[test]
-fn rlisp_test() {
+fn test_rlisp() {
     let mut rlisp = Rlisp::new();
 
-    rlisp.execute("(def {a} 12)");
+    assert_eq!(rlisp.execute("(def {a} 12)"), "()".to_string());
 
     assert_eq!(rlisp.execute("(+ a a)"), "24".to_string());
 
@@ -167,33 +199,42 @@ fn rlisp_test() {
     assert_eq!(rlisp.execute("(elipse 1 2 3 4 5)"), "{1 2 3 4 5}".to_string());
  }
 
+ #[test]
+fn test_curried_builtin() {
+    let mut rlisp = Rlisp::new();
+
+    assert_eq!(rlisp.execute("(def {a} (* 5))"), "()".to_string());
+
+    assert_eq!(rlisp.execute("(a 10)"), "50".to_string());
+}
+
  #[bench]
-fn rlisp_bench_add(b: &mut Bencher) {
+fn bench_rlisp_add(b: &mut Bencher) {
     let mut rlisp = Rlisp::new();
    
     b.iter(|| {
-        rlisp.execute("(+ 1 1)");
+        test::black_box(rlisp.execute("(+ 1 1)"));
     });
 }
 
 #[bench]
-fn rlisp_bench_lookup(b: &mut Bencher) {
+fn bench_rlisp_lookup(b: &mut Bencher) {
     let mut rlisp = Rlisp::new();
 
     rlisp.execute("(def {a} 12)");
    
     b.iter(|| {
-        rlisp.execute("a");
+        test::black_box(rlisp.execute("a"));
     });
 }
 
 #[bench]
-fn rlisp_bench_add_lookup(b: &mut Bencher) {
+fn bench_rlisp_add_lookup(b: &mut Bencher) {
     let mut rlisp = Rlisp::new();
 
     rlisp.execute("(def {a} 12)");
    
     b.iter(|| {
-        rlisp.execute("(+ a a)");
+        test::black_box(rlisp.execute("(+ a a)"));
     });
 }

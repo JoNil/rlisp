@@ -1,4 +1,6 @@
 use std::fmt;
+#[cfg(test)]
+use std::mem;
 
 use environment::Environment;
 use types::Type::*;
@@ -12,6 +14,12 @@ pub struct BuiltinFunctionSpec {
     pub func: BuiltinFunction,
     pub name: &'static str,
     pub argument_types: &'static [Type],
+}
+
+#[deriving(Clone)]
+pub struct CurriedBuiltinSpec {
+    pub builtin: &'static BuiltinFunctionSpec,
+    pub bound_args: Vec<Cell>,
 }
 
 #[deriving(Clone)]
@@ -34,7 +42,13 @@ pub enum Cell {
     Qexpr(Vec<Cell>),
     Error(String),
     Builtin(&'static BuiltinFunctionSpec),
+    CurriedBuiltin(Box<CurriedBuiltinSpec>),
     Lambda(Box<LambdaSpec>),
+}
+
+#[test]
+fn test_cell_size() {
+    assert_eq!(mem::size_of::<Cell>(), 32);
 }
 
 impl PartialEq for Cell {
@@ -51,6 +65,8 @@ impl PartialEq for Cell {
             (&Qexpr(ref a), &Qexpr(ref b))     => *a == *b,
             (&Error(ref a), &Error(ref b))     => *a == *b,
             (&Builtin(ref a), &Builtin(ref b)) => a.func as *const u8 == b.func as *const u8,
+            (&CurriedBuiltin(ref a),
+             &CurriedBuiltin(ref b))           => a.builtin.func as *const u8 == b.builtin.func as *const u8,
             (&Lambda(ref a), &Lambda(ref b))   => a.arguments == b.arguments && a.body == b.body,
             _ => false,
         }
@@ -60,18 +76,19 @@ impl PartialEq for Cell {
 impl Cell {
     pub fn get_type(&self) -> Type {
         match *self {
-            Nil          => NilT,
-            Symbol(_)    => SymbolT,
-            Integer(_)   => IntegerT,
-            Float(_)     => FloatT,
-            Char(_)      => CharT,
-            Bool(_)      => BoolT,
-            Str(_)       => StringT,
-            Sexpr(ref v) => RSexprT(v.iter().map(|e| e.get_type()).collect()),
-            Qexpr(ref v) => RQexprT(v.iter().map(|e| e.get_type()).collect()),
-            Error(_)     => ErrorT,
-            Builtin(_)   => BuiltinT,
-            Lambda(_)    => LambdaT,
+            Nil               => NilT,
+            Symbol(_)         => SymbolT,
+            Integer(_)        => IntegerT,
+            Float(_)          => FloatT,
+            Char(_)           => CharT,
+            Bool(_)           => BoolT,
+            Str(_)            => StringT,
+            Sexpr(ref v)      => RSexprT(v.iter().map(|e| e.get_type()).collect()),
+            Qexpr(ref v)      => RQexprT(v.iter().map(|e| e.get_type()).collect()),
+            Error(_)          => ErrorT,
+            Builtin(_)        => BuiltinT,
+            CurriedBuiltin(_) => BuiltinT,
+            Lambda(_)         => LambdaT,
         }
     }
 
@@ -90,6 +107,7 @@ impl Cell {
             (&Qexpr(ref v), &RQexprT(ref vt)) => v.iter().zip(vt.iter()).all(|(e, t)| e.is_type(t)),
             (&Error(_), &ErrorT)              => true,
             (&Builtin(_), &BuiltinT)          => true,
+            (&CurriedBuiltin(_), &BuiltinT)   => true,
             (&Lambda(_), &LambdaT)            => true,
             (_, &AnyT)                        => true,
             (_, &ElipsisT(inner))             => self.is_type(inner),
@@ -144,7 +162,20 @@ impl Cell {
                 }
                 format!("func: ({} {})", f.name, temp)
             },
-            &Lambda(ref l) => format!("(lambda {} {})", Qexpr(l.arguments.clone()), Qexpr(l.body.clone())),
+            &CurriedBuiltin(box ref cb) => {
+                let mut temp: String = String::new();
+                for (i, t) in cb.builtin.argument_types.iter().enumerate() {
+                    if i >= cb.bound_args.len() {
+                        if i == cb.builtin.argument_types.len() - 1 {
+                            temp.push_str(format!("{}", t)[]);
+                        } else {
+                            temp.push_str(format!("{} ", t)[]);
+                        }
+                    }
+                }
+                format!("func: ({} {})", cb.builtin.name, temp)
+            },
+            &Lambda(ref l)          => format!("(lambda {} {})", Qexpr(l.arguments.clone()), Qexpr(l.body.clone())),
         }
     }
 }
