@@ -37,7 +37,7 @@ version = "0.2.0"
 source = "git+https://github.com/sfackler/rust-phf.git#4546f51fccbd56ddf1214fe232db8926d9f471de"
 dependencies = [
  "phf_shared 0.2.0 (git+https://github.com/sfackler/rust-phf.git)",
- "time 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "time 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -63,7 +63,7 @@ dependencies = [
 
 [[package]]
 name = "time"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "gcc 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",

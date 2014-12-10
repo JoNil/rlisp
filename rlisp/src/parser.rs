@@ -1,4 +1,4 @@
-use cell;
+use cell::Cell;
 use mpc;
 
 pub struct Parser {
@@ -58,10 +58,10 @@ impl Parser {
         parser
     }
 
-    pub fn parse(&self, input: &str) -> cell::Cell {
+    pub fn parse(&self, input: &str) -> Cell {
         let ast = match self.rlisp.parse(input) {
             Some(mpc::Result::Ast(a))   => a,
-            Some(mpc::Result::Error(e)) => { return cell::Cell::Error(e.to_string()); },
+            Some(mpc::Result::Error(e)) => { return Cell::Error(e.to_string()); },
             None                        => { panic!("Internal parsing error") },
         };
         parse_ast(&ast)
@@ -83,90 +83,70 @@ impl Drop for Parser {
     }
 }
 
-fn parse_ast(ast: &mpc::Ast) -> cell::Cell {
+fn parse_ast(ast: &mpc::Ast) -> Cell {
 
     let tag: String = ast.get_tag();
 
     if tag[].find_str("float").is_some() {
         return match from_str(ast.get_contents()[].trim()) {
-            Some(f) => cell::Cell::Float(f), None => cell::Cell::Float(0.0)
+            Some(f) => Cell::Float(f), None => Cell::Float(0.0)
         };
     }
 
     if tag[].find_str("integer").is_some() {
         return match from_str(ast.get_contents()[].trim()) {
-            Some(i) => cell::Cell::Integer(i), None => cell::Cell::Integer(0)
+            Some(i) => Cell::Integer(i), None => Cell::Integer(0)
         };
     }
 
     if tag[].find_str("string").is_some() {
         let s = ast.get_contents();
-        return cell::Cell::Str(s[].slice(1, s.len() - 1).to_string());
+        return Cell::Str(s[].slice(1, s.len() - 1).to_string());
     }
 
     if tag[].find_str("char").is_some() {
         let s = ast.get_contents();
-        return cell::Cell::Char(s[].slice(1, s.len() - 1).char_at(0));
+        return Cell::Char(s[].slice(1, s.len() - 1).char_at(0));
     }
 
     if tag[].find_str("bool").is_some() {
         let s = ast.get_contents();
 
         if s[] == "#t" {
-            return cell::Cell::Bool(true);
+            return Cell::Bool(true);
         } else {
-            return cell::Cell::Bool(false);
+            return Cell::Bool(false);
         }
     }
 
     if tag[].find_str("symbol").is_some() {
         let s = ast.get_contents();
-        return cell::Cell::Symbol(s);
+        return Cell::Symbol(s);
     }
 
     if tag[].find_str("qexpr").is_some() {    
-        let mut res: Vec<cell::Cell> = Vec::new();
+        let mut res: Vec<Cell> = Vec::new();
 
-        for c in ast.child_iter() {
-
-            let ctag: String = c.get_tag();
-            let ccontent: String = c.get_contents();
-
-            if ctag[] == "regex" ||
-               ccontent[] == "{" ||
-               ccontent[] == "}" {
-                continue;
-            }
-
+        for c in ast.child_iter().skip(1).take(ast.get_no_children() as uint - 2) {
             res.push(parse_ast(&c));
-       }
+        }
 
-       return cell::Cell::Qexpr(res);
+       return Cell::Qexpr(res);
     }
 
     if tag[].find_str("sexpr").is_some() {
-        let mut res: Vec<cell::Cell> = Vec::new();
+        let mut res: Vec<Cell> = Vec::new();
 
-        for c in ast.child_iter() {
-
-            let ctag: String = c.get_tag();
-            let ccontent: String = c.get_contents();
-
-            if ctag[] == "regex" ||
-               ccontent[] == "(" ||
-               ccontent[] == ")" {
-                continue;
-            }
-
-           res.push(parse_ast(&c));
+        for c in ast.child_iter().skip(1).take(ast.get_no_children() as uint - 2) {
+            res.push(parse_ast(&c));
         }
 
-       return cell::Cell::Sexpr(res);
+       return Cell::Sexpr(res);
     }
 
     if tag[] == ">" {
         return parse_ast(&ast.get_child(1).expect("Internal grammer error"));
     }
 
-    panic!("Internal ast parse error");
+    Cell::Nil
 }

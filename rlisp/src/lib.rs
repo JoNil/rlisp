@@ -226,6 +226,20 @@ fn test_curried_builtin() {
     assert_eq!(rlisp.execute("(a 10)"), "50".to_string());
 }
 
+#[test]
+fn test_no_input() {
+    let mut rlisp = Rlisp::new();
+
+    assert_eq!(rlisp.execute(""), "()".to_string());
+}
+
+#[test]
+fn test_utf8_string_and_char() {
+    let mut rlisp = Rlisp::new();
+
+    assert_eq!(rlisp.execute("(print \"♥\" '♥')"), "♥\n♥".to_string());
+}
+
  #[bench]
 fn bench_rlisp_add(b: &mut Bencher) {
     let mut rlisp = Rlisp::new();
