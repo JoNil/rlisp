@@ -31,3 +31,10 @@ fn main() {
     assert_eq!(rlisp.execute("(+ a a)"), "24");
 }
 ```
+
+Performance
+===========
+
+test bench_rlisp_add        ... bench:    258821 ns/iter (+/- 6888)
+test bench_rlisp_add_lookup ... bench:    304552 ns/iter (+/- 9030)
+test bench_rlisp_lookup     ... bench:    114339 ns/iter (+/- 2657)

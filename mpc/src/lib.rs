@@ -310,7 +310,7 @@ impl Error {
         unsafe {
             let guard = MPC_GLOBAL_PARSER_LOCK.lock();
             let s = ext_mpc::mpc_err_string(self.error);
-            CString::new(s as *const i8, true).as_str().expect("Not utf-8").to_string()
+            String::from_utf8_lossy(CString::new(s as *const i8, true).as_bytes()).into_owned()
         }
     }
 

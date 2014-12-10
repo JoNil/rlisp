@@ -234,10 +234,10 @@ fn test_no_input() {
 }
 
 #[test]
-fn test_utf8_string_and_char() {
+fn test_utf8_string() {
     let mut rlisp = Rlisp::new();
 
-    assert_eq!(rlisp.execute("(print \"♥\" '♥')"), "♥\n♥".to_string());
+    assert_eq!(rlisp.execute("\"ߚ\""), "\"ߚ\"".to_string());
 }
 
  #[bench]
