@@ -223,7 +223,7 @@ pub fn validate(f: &cell::BuiltinFunctionSpec, args: &[cell::Cell]) -> Option<St
 }
 
 #[test]
-fn validate_test() {
+fn test_validate() {
     let stub_sub = globals::GLOBAL_ENVIROMENT.get("-").unwrap();
 
     assert_eq!(validate(stub_sub, &[Integer(1), Integer(2)]), None);
