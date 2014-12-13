@@ -414,6 +414,7 @@ pub enum Result {
     Error(Error),
 }
 
+#[allow(missing_copy_implementations)]
 pub struct Parser {
     parser: *mut ext_mpc::MpcParser,
 }
@@ -457,8 +458,8 @@ impl Parser {
     }
 }
 
-#[repr(C)]
 bitflags! {
+    #[deriving(Copy)]
     flags LangFlags: c_int {
         const DEFAULT               = 0,
         const PREDICTIVE            = 1,

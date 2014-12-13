@@ -8,25 +8,25 @@ dependencies = [
 
 [[package]]
 name = "gcc"
-version = "0.1.0"
-source = "git+https://github.com/alexcrichton/gcc-rs#3caf7309ef72644cd56a9d3a6f515ae553683176"
+version = "0.1.1"
+source = "git+https://github.com/alexcrichton/gcc-rs#d35c34c871dd75f97fadf04cb0ed85d997a9bc0c"
 
 [[package]]
 name = "gcc"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "mpc"
 version = "0.0.1"
 dependencies = [
- "gcc 0.1.0 (git+https://github.com/alexcrichton/gcc-rs)",
+ "gcc 0.1.1 (git+https://github.com/alexcrichton/gcc-rs)",
 ]
 
 [[package]]
 name = "phf"
 version = "0.2.0"
-source = "git+https://github.com/sfackler/rust-phf.git#4546f51fccbd56ddf1214fe232db8926d9f471de"
+source = "git+https://github.com/sfackler/rust-phf.git#fc4829a292663e4e30a23a4ba1de693d154cd611"
 dependencies = [
  "phf_shared 0.2.0 (git+https://github.com/sfackler/rust-phf.git)",
 ]
@@ -34,7 +34,7 @@ dependencies = [
 [[package]]
 name = "phf_mac"
 version = "0.2.0"
-source = "git+https://github.com/sfackler/rust-phf.git#4546f51fccbd56ddf1214fe232db8926d9f471de"
+source = "git+https://github.com/sfackler/rust-phf.git#fc4829a292663e4e30a23a4ba1de693d154cd611"
 dependencies = [
  "phf_shared 0.2.0 (git+https://github.com/sfackler/rust-phf.git)",
  "time 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -43,9 +43,9 @@ dependencies = [
 [[package]]
 name = "phf_shared"
 version = "0.2.0"
-source = "git+https://github.com/sfackler/rust-phf.git#4546f51fccbd56ddf1214fe232db8926d9f471de"
+source = "git+https://github.com/sfackler/rust-phf.git#fc4829a292663e4e30a23a4ba1de693d154cd611"
 dependencies = [
- "xxhash 0.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "xxhash 0.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -66,11 +66,11 @@ name = "time"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "gcc 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gcc 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "xxhash"
-version = "0.0.1"
+version = "0.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
