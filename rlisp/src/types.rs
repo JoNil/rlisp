@@ -1,6 +1,7 @@
+use std::fmt;
+
 use cell;
 use self::Type::*;
-use std::fmt;
 
 #[cfg(test)]
 use cell::Cell::*;
@@ -97,9 +98,9 @@ impl Type {
             BuiltinT             => "Builtin".to_string(),
             LambdaT              => "Lambda".to_string(),
             AnyT                 => "Any".to_string(),
-            ElipsisT(ref inner)  => format!("{}...", inner.to_string()),
-            OptionalT(ref inner) => format!("[{}]", inner.to_string()),
-            OrT(ref i1, ref i2)  => format!("{}|{}", i1.to_string(), i2.to_string()),
+            ElipsisT(ref inner)  => format!("{}...", inner),
+            OptionalT(ref inner) => format!("[{}]", inner),
+            OrT(ref i1, ref i2)  => format!("{}|{}", i1, i2),
         }
     }
 }
@@ -180,7 +181,7 @@ fn validate_inner(argument_types: &[Type], args: &[cell::Cell]) -> Option<String
 
         if !arg.is_type(arg_type) {
             return Some(format!("argument {} is of type {} expected {}",
-                                i+1, arg.get_type().to_string(), arg_type));
+                                i+1, arg.get_type(), arg_type));
         }
 
         if let &ElipsisT(_) = arg_type {} else {

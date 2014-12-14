@@ -188,18 +188,18 @@ impl fmt::Show for Cell {
 
 #[test]
 fn test_fmt() {
-    assert_eq!(format!("{}", &Nil), "()".to_string());
-    assert_eq!(format!("{}", &Symbol("Hej".to_string())), "Hej".to_string());
-    assert_eq!(format!("{}", &Integer(-1)), "-1".to_string());
-    assert_eq!(format!("{}", &Float(5.54321012)), "5.54".to_string());
-    assert_eq!(format!("{}", &Char('a')), "'a'".to_string());
-    assert_eq!(format!("{}", &Bool(true)), "#t".to_string());
-    assert_eq!(format!("{}", &Bool(false)), "#f".to_string());
-    assert_eq!(format!("{}", &Str("Hej".to_string())), "\"Hej\"".to_string());
-    assert_eq!(format!("{}", &Sexpr(vec![Nil, Integer(1)])), "(() 1)".to_string());
-    assert_eq!(format!("{}", &Qexpr(vec![Nil, Integer(1)])), "{() 1}".to_string());
-    assert_eq!(format!("{}", &Sexpr(Vec::new())), "()".to_string());
-    assert_eq!(format!("{}", &Qexpr(Vec::new())), "{}".to_string());
-    assert_eq!(format!("{}", &Error("Error".to_string())), "Error: Error".to_string());
-    assert_eq!(format!("{}", &Float(5.0)), "5.00".to_string());
+    assert_eq!(format!("{}", &Nil), "()");
+    assert_eq!(format!("{}", &Symbol("Hej".to_string())), "Hej");
+    assert_eq!(format!("{}", &Integer(-1)), "-1");
+    assert_eq!(format!("{}", &Float(5.54321012)), "5.54");
+    assert_eq!(format!("{}", &Char('a')), "'a'");
+    assert_eq!(format!("{}", &Bool(true)), "#t");
+    assert_eq!(format!("{}", &Bool(false)), "#f");
+    assert_eq!(format!("{}", &Str("Hej".to_string())), "\"Hej\"");
+    assert_eq!(format!("{}", &Sexpr(vec![Nil, Integer(1)])), "(() 1)");
+    assert_eq!(format!("{}", &Qexpr(vec![Nil, Integer(1)])), "{() 1}");
+    assert_eq!(format!("{}", &Sexpr(Vec::new())), "()");
+    assert_eq!(format!("{}", &Qexpr(Vec::new())), "{}");
+    assert_eq!(format!("{}", &Error("Error".to_string())), "Error: Error");
+    assert_eq!(format!("{}", &Float(5.0)), "5.00");
 }

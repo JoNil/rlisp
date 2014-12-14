@@ -130,7 +130,7 @@ fn apply(env: Environment, procedure: &Cell, args: &[Cell]) -> Cell {
                 })
             }            
         },
-        _ => Cell::Error(format!("{} is not a procedure, is {}", *procedure, procedure.get_type().to_string())),
+        _ => Cell::Error(format!("{} is not a procedure, is {}", *procedure, procedure.get_type())),
     }
 }
 
