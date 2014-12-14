@@ -85,3 +85,10 @@ fn test_unpack() {
 
     assert_eq!(rlisp.execute("(unpack + {1 2 3 4 5 6})"), "21".to_string());
 }
+
+#[test]
+fn test_pack() {
+    let mut rlisp = Rlisp::new();
+
+    assert_eq!(rlisp.execute("(pack head 5 6 7)"), "5".to_string());
+}
