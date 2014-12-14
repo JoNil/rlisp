@@ -69,7 +69,7 @@ fn apply(env: Environment, procedure: &Cell, args: &[Cell]) -> Cell {
                 }
             }
 
-            if evaled_args.len() == 0 {            
+            if evaled_args.len() == 0 {
                 if let Some(&Cell::Symbol(ref s)) = lambda.arguments.get(0) {
                     if s[] == "..." {
                         sub_env.insert(s, &Cell::Qexpr(Vec::new()));
@@ -123,6 +123,8 @@ fn apply(env: Environment, procedure: &Cell, args: &[Cell]) -> Cell {
                 }
 
                 (cb.builtin.func)(env, evaled_and_bound_args[])
+            } else if evaled_args.len() == 0 {
+                Cell::Error(format!("{} got no arguments", procedure))
             } else {
                 Cell::CurriedBuiltin(box CurriedBuiltinSpec {
                     builtin: cb.builtin,

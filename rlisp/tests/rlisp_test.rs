@@ -84,6 +84,10 @@ fn test_unpack() {
     let mut rlisp = Rlisp::new();
 
     assert_eq!(rlisp.execute("(unpack + {1 2 3 4 5 6})"), "21");
+
+    assert_eq!(rlisp.execute("(def {add-unpacked} (unpack +))"), "()");
+
+    assert_eq!(rlisp.execute("(add-unpacked {1 2 3 4 5 6})"), "21");
 }
 
 #[test]
@@ -91,4 +95,15 @@ fn test_pack() {
     let mut rlisp = Rlisp::new();
 
     assert_eq!(rlisp.execute("(pack head 5 6 7)"), "5");
+}
+
+#[test]
+fn test_no_extra_args() {
+    let mut rlisp = Rlisp::new();
+
+    assert_eq!(rlisp.execute("((* 1))"), "Error: func: (* Integer|Float) got no arguments");
+
+    assert_eq!(rlisp.execute("(def {mul a b} {* a b})"), "()");
+
+    assert_eq!(rlisp.execute("((mul 5))"), "Error: (lambda {b} {* a b}) got no arguments");
 }
