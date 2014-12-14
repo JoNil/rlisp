@@ -107,3 +107,10 @@ fn test_no_extra_args() {
 
     assert_eq!(rlisp.execute("((mul 5))"), "Error: (lambda {b} {* a b}) got no arguments");
 }
+
+#[test]
+fn test_if() {
+    let mut rlisp = Rlisp::new();
+
+    assert_eq!(rlisp.execute("(if #t 1 2)"), "1");
+}

@@ -40,12 +40,41 @@ pub static GLOBAL_ENVIROMENT: phf::Map<&'static str, BuiltinFunctionSpec> = phf_
         name: "!=",
         argument_types: &[AnyT, AnyT],
     },
-    // <
-    // <=
-    // >
-    // >=
-    // &&
-    // ||
+    "<" => BuiltinFunctionSpec {
+        func: builtin::lt,
+        name: "<",
+        argument_types: &[AnyT, AnyT],
+    },
+    "<=" => BuiltinFunctionSpec {
+        func: builtin::lte,
+        name: "<=",
+        argument_types: &[AnyT, AnyT],
+    },
+    ">" => BuiltinFunctionSpec {
+        func: builtin::gt,
+        name: ">",
+        argument_types: &[AnyT, AnyT],
+    },
+    ">=" => BuiltinFunctionSpec {
+        func: builtin::gte,
+        name: ">",
+        argument_types: &[AnyT, AnyT],
+    },
+    "and" => BuiltinFunctionSpec {
+        func: builtin::and,
+        name: "and",
+        argument_types: &[BoolT, ElipsisT(&BoolT)],
+    },
+    "or" => BuiltinFunctionSpec {
+        func: builtin::or,
+        name: "or",
+        argument_types: &[BoolT, ElipsisT(&BoolT)],
+    },
+    "if" => BuiltinFunctionSpec {
+        func: builtin::if_func,
+        name: "if",
+        argument_types: &[BoolT, AnyT, AnyT],
+    },
 
     // IO
     "print" => BuiltinFunctionSpec {
@@ -111,7 +140,7 @@ pub static GLOBAL_ENVIROMENT: phf::Map<&'static str, BuiltinFunctionSpec> = phf_
     "eval" => BuiltinFunctionSpec {
         func: builtin::eval,
         name: "eval",
-        argument_types: &[OrT(&QexprT(&[ElipsisT(&AnyT)]), &SexprT(&[ElipsisT(&AnyT)]))],
+        argument_types: &[AnyT],
     },
     "def" => BuiltinFunctionSpec {
         func: builtin::def,
@@ -128,10 +157,10 @@ pub static GLOBAL_ENVIROMENT: phf::Map<&'static str, BuiltinFunctionSpec> = phf_
         name: "lambda",
         argument_types: &[QexprT(&[ElipsisT(&SymbolT)]), QexprT(&[ElipsisT(&AnyT)])],
     },
+
     // begin
     // let
     // for
-    // if
     // cond
     // continuations?
 };

@@ -193,8 +193,8 @@ pub fn join(_: Environment, args: &[Cell]) -> Cell {
 fn test_join() {
     let e = Environment::new();
     assert_eq!(join(e.clone(), &[Qexpr(vec![Integer(1), Integer(2), Integer(3)]),
-                              Qexpr(vec![Integer(4), Integer(5), Integer(6)]),
-                              Qexpr(vec![Integer(1), Integer(2), Integer(3)])]),
+                                 Qexpr(vec![Integer(4), Integer(5), Integer(6)]),
+                                 Qexpr(vec![Integer(1), Integer(2), Integer(3)])]),
                Qexpr(vec![Integer(1), Integer(2), Integer(3), Integer(4), Integer(5), Integer(6), Integer(1), Integer(2), Integer(3)]));
 }
 
@@ -214,7 +214,7 @@ fn test_len() {
 pub fn eval(env: Environment, args: &[Cell]) -> Cell {
     match args {
         [Qexpr(ref v)] => super::eval(env, &Sexpr(v.clone())),
-        [Sexpr(ref v)] => super::eval(env, &Sexpr(v.clone())),
+        [expr]         => super::eval(env, expr),
         _              => internal_error(),
     }
 }
@@ -262,6 +262,79 @@ fn test_ne() {
     assert_eq!(ne(e.clone(), &[Integer(1), Float(1.0)]), Bool(true));
     assert_eq!(ne(e.clone(), &[eq_f.clone(), eq_f.clone()]), Bool(false));
     assert_eq!(ne(e.clone(), &[eq_f.clone(), ne_f.clone()]), Bool(true));
+}
+
+pub fn lt(_: Environment, args: &[Cell]) -> Cell {
+    match args {
+        [&Integer(ref a), &Integer(ref b)] => *a < *b,
+        [&Float(ref a), &Float(ref b)]     => *a < *b,
+        [&Char(ref a), &Char(ref b)]       => *a < *b,
+        [&Str(ref a), &Str(ref b)]         => *a < *b,
+        _ => false,
+    }
+}
+
+pub fn lte(_: Environment, args: &[Cell]) -> Cell {
+    match args {
+        [&Integer(ref a), &Integer(ref b)] => *a <= *b,
+        [&Float(ref a), &Float(ref b)]     => *a <= *b,
+        [&Char(ref a), &Char(ref b)]       => *a <= *b,
+        [&Str(ref a), &Str(ref b)]         => *a <= *b,
+        _ => false,
+    }
+}
+
+pub fn gt(_: Environment, args: &[Cell]) -> Cell {
+    match args {
+        [&Integer(ref a), &Integer(ref b)] => *a > *b,
+        [&Float(ref a), &Float(ref b)]     => *a > *b,
+        [&Char(ref a), &Char(ref b)]       => *a > *b,
+        [&Str(ref a), &Str(ref b)]         => *a > *b,
+        _ => false,
+    }
+}
+
+pub fn gte(_: Environment, args: &[Cell]) -> Cell {
+    match args {
+        [&Integer(ref a), &Integer(ref b)] => *a >= *b,
+        [&Float(ref a), &Float(ref b)]     => *a >= *b,
+        [&Char(ref a), &Char(ref b)]       => *a >= *b,
+        [&Str(ref a), &Str(ref b)]         => *a >= *b,
+        _ => false,
+    }
+}
+
+pub fn and(_: Environment, args: &[Cell]) -> Cell {
+    for arg in args {
+        match arg {
+            Bool(ref a) => { if !a { return Bool(false); } }
+            _           => return Bool(false),
+        }
+    }
+    Bool(true)
+}
+
+pub fn or(_: Environment, args: &[Cell]) -> Cell {
+    for arg in args {
+        match arg {
+            Bool(ref a) => { if a { return Bool(true); } }
+            _           => return Bool(false),
+        }
+    }
+    Bool(false)
+}
+
+pub fn if_func(env: Environment, args: &[Cell]) -> Cell {
+     match args {
+        [&Bool(ref cond), _, _] => {
+            if cond {
+                eval(env.clone(), args[1..1])
+            } else {
+                eval(env.clone(), args[2..2])
+            }
+        },
+        _ => internal_error(),
+    }
 }
 
 pub fn def(env: Environment, args: &[Cell]) -> Cell {
