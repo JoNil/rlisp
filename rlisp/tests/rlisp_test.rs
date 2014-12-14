@@ -113,4 +113,8 @@ fn test_if() {
     let mut rlisp = Rlisp::new();
 
     assert_eq!(rlisp.execute("(if #t 1 2)"), "1");
+    assert_eq!(rlisp.execute("(if #f 1 2)"), "2");
+
+    assert_eq!(rlisp.execute("(if (== 1 1) {+ 1 1} {+ 2 2})"), "2");
+    assert_eq!(rlisp.execute("(if (== 1 2) {+ 1 1} {+ 2 2})"), "4");
 }
