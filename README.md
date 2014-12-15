@@ -36,7 +36,7 @@ Performance
 ===========
 
 ```
-test bench_rlisp_add        ... bench:    258821 ns/iter (+/- 6888)
-test bench_rlisp_add_lookup ... bench:    304552 ns/iter (+/- 9030)
-test bench_rlisp_lookup     ... bench:    114339 ns/iter (+/- 2657)
+test bench_rlisp_add        ... bench:    259870 ns/iter (+/- 9592)
+test bench_rlisp_add_lookup ... bench:    306329 ns/iter (+/- 5411)
+test bench_rlisp_lookup     ... bench:    114719 ns/iter (+/- 2869)
 ```
