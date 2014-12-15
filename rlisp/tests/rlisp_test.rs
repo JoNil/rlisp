@@ -139,6 +139,12 @@ fn test_comparisons() {
     assert_eq!(rlisp.execute("(or #t #t)"), "#t");
     assert_eq!(rlisp.execute("(or #t #t #f)"), "#t");
     assert_eq!(rlisp.execute("(or #f #f #f)"), "#f");
+
+    assert_eq!(rlisp.execute("(== {1 2 3 {4 5}} {1 2 3 {4 5}})"), "#t");
+    assert_eq!(rlisp.execute("(== {1 2 3 {4 5}} {1 2 3 {4 6}})"), "#f");
+
+    assert_eq!(rlisp.execute("(!= {1 2 3 {4 5}} {1 2 3 {4 5}})"), "#f");
+    assert_eq!(rlisp.execute("(!= {1 2 3 {4 5}} {1 2 3 {4 6}})"), "#t");
 }
 
 #[test]
@@ -150,4 +156,9 @@ fn test_if() {
 
     assert_eq!(rlisp.execute("(if (== 1 1) {+ 1 1} {+ 2 2})"), "2");
     assert_eq!(rlisp.execute("(if (== 1 2) {+ 1 1} {+ 2 2})"), "4");
+
+    assert_eq!(rlisp.execute("(def {x} 100)"), "()");
+    assert_eq!(rlisp.execute("(def {y} 200)"), "()");
+
+    assert_eq!(rlisp.execute("(if (== x y) {+ x y} {- x y})"), "-100");
 }
