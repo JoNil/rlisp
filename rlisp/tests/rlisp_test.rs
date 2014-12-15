@@ -140,6 +140,9 @@ fn test_comparisons() {
     assert_eq!(rlisp.execute("(or #t #t #f)"), "#t");
     assert_eq!(rlisp.execute("(or #f #f #f)"), "#f");
 
+    assert_eq!(rlisp.execute("(not #t)"), "#f");
+    assert_eq!(rlisp.execute("(not #f)"), "#t");
+
     assert_eq!(rlisp.execute("(== {1 2 3 {4 5}} {1 2 3 {4 5}})"), "#t");
     assert_eq!(rlisp.execute("(== {1 2 3 {4 5}} {1 2 3 {4 6}})"), "#f");
 

@@ -57,7 +57,7 @@ pub static GLOBAL_ENVIROMENT: phf::Map<&'static str, BuiltinFunctionSpec> = phf_
     },
     ">=" => BuiltinFunctionSpec {
         func: builtin::gte,
-        name: ">",
+        name: ">=",
         argument_types: &[AnyT, AnyT],
     },
     "and" => BuiltinFunctionSpec {
@@ -69,6 +69,11 @@ pub static GLOBAL_ENVIROMENT: phf::Map<&'static str, BuiltinFunctionSpec> = phf_
         func: builtin::or,
         name: "or",
         argument_types: &[BoolT, ElipsisT(&BoolT)],
+    },
+    "not" => BuiltinFunctionSpec {
+        func: builtin::not,
+        name: "not",
+        argument_types: &[BoolT],
     },
     "if" => BuiltinFunctionSpec {
         func: builtin::if_func,

@@ -324,6 +324,13 @@ pub fn or(_: Environment, args: &[Cell]) -> Cell {
     Bool(false)
 }
 
+pub fn not(_: Environment, args: &[Cell]) -> Cell {
+    match args {
+        [Bool(cond)] => Bool(!cond),
+        _            => internal_error(),
+    }
+}
+
 pub fn if_func(env: Environment, args: &[Cell]) -> Cell {
      match args {
         [Bool(cond), _, _] => {
