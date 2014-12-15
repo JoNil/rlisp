@@ -8,8 +8,8 @@ Rlisp is a small lisp like language written in Rust. It's based on the book [Bui
 Todo
 ====
 
+- Fix empty list syntax
 - Change currying of lambdas to replace in the body
-- Recursion
 - Implement missing builins
 - Add type Type
 - Add literals of type Type

@@ -162,3 +162,11 @@ fn test_if() {
 
     assert_eq!(rlisp.execute("(if (== x y) {+ x y} {- x y})"), "-100");
 }
+
+#[test]
+fn test_recursion() {
+    let mut rlisp = Rlisp::new();
+
+    assert_eq!(rlisp.execute("(def {rev l} {if (== l {}) {list} {join (rev (tail l)) (list (head l))}})"), "()");
+    assert_eq!(rlisp.execute("(rev {1 2 3})"), "{3 2 1}");
+}
