@@ -1,4 +1,5 @@
 use std::fmt;
+use std::str::CowString;
 
 use cell;
 use self::Type::*;
@@ -37,15 +38,17 @@ pub struct Arity {
 }
 
 impl Type {
-    pub fn to_string(&self) -> String {
+    pub fn to_string(&self) -> CowString {
+        use std::borrow::Cow::{Borrowed, Owned};
+
         match *self {
-            NilT     => "Nil".to_string(),
-            SymbolT  => "Symbol".to_string(),
-            IntegerT => "Integer".to_string(),
-            FloatT   => "Float".to_string(),
-            CharT    => "Char".to_string(),
-            BoolT    => "Bool".to_string(),
-            StringT  => "String".to_string(),
+            NilT     => Borrowed("Nil"),
+            SymbolT  => Borrowed("Symbol"),
+            IntegerT => Borrowed("Integer"),
+            FloatT   => Borrowed("Float"),
+            CharT    => Borrowed("Char"),
+            BoolT    => Borrowed("Bool"),
+            StringT  => Borrowed("String"),
             SexprT(ref v) => {
                 let mut temp: String = "(".to_string();
                 for i in range(0, v.len()) {
@@ -56,7 +59,7 @@ impl Type {
                     }
                 }
                 temp.push_str(")");
-                temp
+                Owned(temp)
             },
             QexprT(ref v) => {
                 let mut temp: String = "{".to_string();
@@ -68,7 +71,7 @@ impl Type {
                     }
                 }
                 temp.push_str("}");
-                temp
+                Owned(temp)
             },
             RSexprT(ref v) => {
                 let mut temp: String = "(".to_string();
@@ -80,7 +83,7 @@ impl Type {
                     }
                 }
                 temp.push_str(")");
-                temp
+                Owned(temp)
             },
             RQexprT(ref v) => {
                 let mut temp: String = "{".to_string();
@@ -92,15 +95,15 @@ impl Type {
                     }
                 }
                 temp.push_str("}");
-                temp
+                Owned(temp)
             },
-            ErrorT               => "Error".to_string(),
-            BuiltinT             => "Builtin".to_string(),
-            LambdaT              => "Lambda".to_string(),
-            AnyT                 => "Any".to_string(),
-            ElipsisT(ref inner)  => format!("{}...", inner),
-            OptionalT(ref inner) => format!("[{}]", inner),
-            OrT(ref i1, ref i2)  => format!("{}|{}", i1, i2),
+            ErrorT               => Borrowed("Error"),
+            BuiltinT             => Borrowed("Builtin"),
+            LambdaT              => Borrowed("Lambda"),
+            AnyT                 => Borrowed("Any"),
+            ElipsisT(ref inner)  => Owned(format!("{}...", inner)),
+            OptionalT(ref inner) => Owned(format!("[{}]", inner)),
+            OrT(ref i1, ref i2)  => Owned(format!("{}|{}", i1, i2)),
         }
     }
 }

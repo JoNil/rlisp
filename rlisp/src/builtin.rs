@@ -270,7 +270,7 @@ pub fn lt(_: Environment, args: &[Cell]) -> Cell {
         [Float(ref a), Float(ref b)]     => Bool(*a < *b),
         [Char(ref a), Char(ref b)]       => Bool(*a < *b),
         [Str(ref a), Str(ref b)]         => Bool(*a < *b),
-        _ => Bool(false),
+        _                                => Bool(false),
     }
 }
 
@@ -280,7 +280,7 @@ pub fn lte(_: Environment, args: &[Cell]) -> Cell {
         [Float(ref a), Float(ref b)]     => Bool(*a <= *b),
         [Char(ref a), Char(ref b)]       => Bool(*a <= *b),
         [Str(ref a), Str(ref b)]         => Bool(*a <= *b),
-        _ => Bool(false),
+        _                                => Bool(false),
     }
 }
 
@@ -290,7 +290,7 @@ pub fn gt(_: Environment, args: &[Cell]) -> Cell {
         [Float(ref a), Float(ref b)]     => Bool(*a > *b),
         [Char(ref a), Char(ref b)]       => Bool(*a > *b),
         [Str(ref a), Str(ref b)]         => Bool(*a > *b),
-        _ => Bool(false),
+        _                                => Bool(false),
     }
 }
 
@@ -300,7 +300,7 @@ pub fn gte(_: Environment, args: &[Cell]) -> Cell {
         [Float(ref a), Float(ref b)]     => Bool(*a >= *b),
         [Char(ref a), Char(ref b)]       => Bool(*a >= *b),
         [Str(ref a), Str(ref b)]         => Bool(*a >= *b),
-        _ => Bool(false),
+        _                                => Bool(false),
     }
 }
 

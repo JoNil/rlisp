@@ -1,4 +1,6 @@
 use std::fmt;
+use std::str::CowString;
+
 #[cfg(test)]
 use std::mem;
 
@@ -117,15 +119,17 @@ impl Cell {
         }
     }
 
-    fn to_string(&self) -> String {
+    fn to_string(&self) -> CowString {
+        use std::borrow::Cow::{Borrowed, Owned};
+
         match self {
-            &Nil             => "()".to_string(),
-            &Symbol(ref sym) => format!("{}", sym),
-            &Integer(ref i)  => format!("{}", i),
-            &Float(ref fl)   => format!("{:.2}", fl),
-            &Char(ref c)     => format!("'{}'", c),
-            &Bool(ref b)     => if *b { "#t".to_string() } else { "#f".to_string() },
-            &Str(ref s)      => format!("\"{}\"", s),
+            &Nil             => Borrowed("()"),
+            &Symbol(ref sym) => Owned(format!("{}", sym)),
+            &Integer(ref i)  => Owned(format!("{}", i)),
+            &Float(ref fl)   => Owned(format!("{:.2}", fl)),
+            &Char(ref c)     => Owned(format!("'{}'", c)),
+            &Bool(ref b)     => if *b { Borrowed("#t") } else { Borrowed("#f") },
+            &Str(ref s)      => Owned(format!("\"{}\"", s)),
             &Sexpr(ref v)    => {
                 let mut temp: String = "(".to_string();
                 for i in range(0, v.len()) {
@@ -136,7 +140,7 @@ impl Cell {
                     }
                 }
                 temp.push_str(")");
-                temp
+                Owned(temp)
             },
             &Qexpr(ref v) => {
                 let mut temp: String = "{".to_string();
@@ -148,9 +152,9 @@ impl Cell {
                     }
                 }
                 temp.push_str("}");
-                temp
+                Owned(temp)
             },
-            &Error(ref e)    => format!("Error: {}", e),
+            &Error(ref e)    => Owned(format!("Error: {}", e)),
             &Builtin(ref f)  => {
                 let mut temp: String = String::new();
                 for (i, t) in f.argument_types.iter().enumerate() {
@@ -160,7 +164,7 @@ impl Cell {
                         temp.push_str(format!("{} ", t)[]);
                     }
                 }
-                format!("func: ({} {})", f.name, temp)
+                Owned(format!("func: ({} {})", f.name, temp))
             },
             &CurriedBuiltin(box ref cb) => {
                 let mut temp: String = String::new();
@@ -173,9 +177,10 @@ impl Cell {
                         }
                     }
                 }
-                format!("func: ({} {})", cb.builtin.name, temp)
+                Owned(format!("func: ({} {})", cb.builtin.name, temp))
             },
-            &Lambda(ref l)          => format!("(lambda {} {})", Qexpr(l.arguments.clone()), Qexpr(l.body.clone())),
+            &Lambda(ref l) => Owned(format!("(lambda {} {})",
+                                    Qexpr(l.arguments.clone()), Qexpr(l.body.clone()))),
         }
     }
 }
