@@ -459,7 +459,6 @@ impl Parser {
 }
 
 bitflags! {
-    #[deriving(Copy)]
     flags LangFlags: c_int {
         const DEFAULT               = 0,
         const PREDICTIVE            = 1,

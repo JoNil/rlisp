@@ -2,7 +2,7 @@ use cell::Cell::*;
 use cell::{Cell, LambdaSpec};
 use environment::Environment;
 
-fn internal_error() -> Cell {
+fn internal_error() -> ! {
     panic!("Internal type error");
 }
 
@@ -28,7 +28,7 @@ pub fn add(_: Environment, args: &[Cell]) -> Cell {
                     fsum += isum as f64 + a;
                 }
             },
-            _ => return internal_error(),
+            _ => internal_error(),
          }
     }
 
@@ -182,7 +182,7 @@ pub fn join(_: Environment, args: &[Cell]) -> Cell {
     for arg in args.iter() {
          match arg {
             &Qexpr(ref v) => res.push_all(v[]),
-            _             => return internal_error(),
+            _             => internal_error(),
          }
     }
 
@@ -214,7 +214,7 @@ fn test_len() {
 pub fn eval(env: Environment, args: &[Cell]) -> Cell {
     match args {
         [Qexpr(ref v)] => super::eval(env, &Sexpr(v.clone())),
-        [expr]         => super::eval(env, expr),
+        [ref expr]     => super::eval(env, expr),
         _              => internal_error(),
     }
 }
@@ -266,59 +266,59 @@ fn test_ne() {
 
 pub fn lt(_: Environment, args: &[Cell]) -> Cell {
     match args {
-        [&Integer(ref a), &Integer(ref b)] => *a < *b,
-        [&Float(ref a), &Float(ref b)]     => *a < *b,
-        [&Char(ref a), &Char(ref b)]       => *a < *b,
-        [&Str(ref a), &Str(ref b)]         => *a < *b,
-        _ => false,
+        [Integer(ref a), Integer(ref b)] => Bool(*a < *b),
+        [Float(ref a), Float(ref b)]     => Bool(*a < *b),
+        [Char(ref a), Char(ref b)]       => Bool(*a < *b),
+        [Str(ref a), Str(ref b)]         => Bool(*a < *b),
+        _ => Bool(false),
     }
 }
 
 pub fn lte(_: Environment, args: &[Cell]) -> Cell {
     match args {
-        [&Integer(ref a), &Integer(ref b)] => *a <= *b,
-        [&Float(ref a), &Float(ref b)]     => *a <= *b,
-        [&Char(ref a), &Char(ref b)]       => *a <= *b,
-        [&Str(ref a), &Str(ref b)]         => *a <= *b,
-        _ => false,
+        [Integer(ref a), Integer(ref b)] => Bool(*a <= *b),
+        [Float(ref a), Float(ref b)]     => Bool(*a <= *b),
+        [Char(ref a), Char(ref b)]       => Bool(*a <= *b),
+        [Str(ref a), Str(ref b)]         => Bool(*a <= *b),
+        _ => Bool(false),
     }
 }
 
 pub fn gt(_: Environment, args: &[Cell]) -> Cell {
     match args {
-        [&Integer(ref a), &Integer(ref b)] => *a > *b,
-        [&Float(ref a), &Float(ref b)]     => *a > *b,
-        [&Char(ref a), &Char(ref b)]       => *a > *b,
-        [&Str(ref a), &Str(ref b)]         => *a > *b,
-        _ => false,
+        [Integer(ref a), Integer(ref b)] => Bool(*a > *b),
+        [Float(ref a), Float(ref b)]     => Bool(*a > *b),
+        [Char(ref a), Char(ref b)]       => Bool(*a > *b),
+        [Str(ref a), Str(ref b)]         => Bool(*a > *b),
+        _ => Bool(false),
     }
 }
 
 pub fn gte(_: Environment, args: &[Cell]) -> Cell {
     match args {
-        [&Integer(ref a), &Integer(ref b)] => *a >= *b,
-        [&Float(ref a), &Float(ref b)]     => *a >= *b,
-        [&Char(ref a), &Char(ref b)]       => *a >= *b,
-        [&Str(ref a), &Str(ref b)]         => *a >= *b,
-        _ => false,
+        [Integer(ref a), Integer(ref b)] => Bool(*a >= *b),
+        [Float(ref a), Float(ref b)]     => Bool(*a >= *b),
+        [Char(ref a), Char(ref b)]       => Bool(*a >= *b),
+        [Str(ref a), Str(ref b)]         => Bool(*a >= *b),
+        _ => Bool(false),
     }
 }
 
 pub fn and(_: Environment, args: &[Cell]) -> Cell {
-    for arg in args {
+    for arg in args.iter() {
         match arg {
-            Bool(ref a) => { if !a { return Bool(false); } }
-            _           => return Bool(false),
+            &Bool(a) => { if !a { return Bool(false); } }
+            _        => internal_error(),
         }
     }
     Bool(true)
 }
 
 pub fn or(_: Environment, args: &[Cell]) -> Cell {
-    for arg in args {
+    for arg in args.iter() {
         match arg {
-            Bool(ref a) => { if a { return Bool(true); } }
-            _           => return Bool(false),
+            &Bool(a) => { if a { return Bool(true); } }
+            _        => internal_error(),
         }
     }
     Bool(false)
@@ -326,11 +326,11 @@ pub fn or(_: Environment, args: &[Cell]) -> Cell {
 
 pub fn if_func(env: Environment, args: &[Cell]) -> Cell {
      match args {
-        [&Bool(ref cond), _, _] => {
+        [Bool(cond), _, _] => {
             if cond {
-                eval(env.clone(), args[1..1])
+                eval(env.clone(), args[1..2])
             } else {
-                eval(env.clone(), args[2..2])
+                eval(env.clone(), args[2..3])
             }
         },
         _ => internal_error(),

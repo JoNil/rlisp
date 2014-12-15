@@ -109,6 +109,39 @@ fn test_no_extra_args() {
 }
 
 #[test]
+fn test_comparisons() {
+    let mut rlisp = Rlisp::new();
+
+    assert_eq!(rlisp.execute("(> 1 2)"), "#f");
+    assert_eq!(rlisp.execute("(> 2 1)"), "#t");
+    assert_eq!(rlisp.execute("(> 2 2)"), "#f");
+
+    assert_eq!(rlisp.execute("(< 1 2)"), "#t");
+    assert_eq!(rlisp.execute("(< 2 1)"), "#f");
+    assert_eq!(rlisp.execute("(< 2 2)"), "#f");
+
+    assert_eq!(rlisp.execute("(>= 1 2)"), "#f");
+    assert_eq!(rlisp.execute("(>= 2 1)"), "#t");
+    assert_eq!(rlisp.execute("(>= 2 2)"), "#t");
+
+    assert_eq!(rlisp.execute("(<= 1 2)"), "#t");
+    assert_eq!(rlisp.execute("(<= 2 1)"), "#f");
+    assert_eq!(rlisp.execute("(<= 2 2)"), "#t");
+
+    assert_eq!(rlisp.execute("(and #f #f)"), "#f");
+    assert_eq!(rlisp.execute("(and #t #f)"), "#f");
+    assert_eq!(rlisp.execute("(and #t #t)"), "#t");
+    assert_eq!(rlisp.execute("(and #t #t #f)"), "#f");
+    assert_eq!(rlisp.execute("(and #t #t #t)"), "#t");
+
+    assert_eq!(rlisp.execute("(or #f #f)"), "#f");
+    assert_eq!(rlisp.execute("(or #t #f)"), "#t");
+    assert_eq!(rlisp.execute("(or #t #t)"), "#t");
+    assert_eq!(rlisp.execute("(or #t #t #f)"), "#t");
+    assert_eq!(rlisp.execute("(or #f #f #f)"), "#f");
+}
+
+#[test]
 fn test_if() {
     let mut rlisp = Rlisp::new();
 

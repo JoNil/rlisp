@@ -25,25 +25,25 @@ dependencies = [
 
 [[package]]
 name = "phf"
-version = "0.2.0"
-source = "git+https://github.com/sfackler/rust-phf.git#fc4829a292663e4e30a23a4ba1de693d154cd611"
+version = "0.3.0"
+source = "git+https://github.com/sfackler/rust-phf.git#0a80b06ecde77b33cec8c956c67704613fdd313e"
 dependencies = [
- "phf_shared 0.2.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_shared 0.3.0 (git+https://github.com/sfackler/rust-phf.git)",
 ]
 
 [[package]]
 name = "phf_mac"
-version = "0.2.0"
-source = "git+https://github.com/sfackler/rust-phf.git#fc4829a292663e4e30a23a4ba1de693d154cd611"
+version = "0.3.0"
+source = "git+https://github.com/sfackler/rust-phf.git#0a80b06ecde77b33cec8c956c67704613fdd313e"
 dependencies = [
- "phf_shared 0.2.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_shared 0.3.0 (git+https://github.com/sfackler/rust-phf.git)",
  "time 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "phf_shared"
-version = "0.2.0"
-source = "git+https://github.com/sfackler/rust-phf.git#fc4829a292663e4e30a23a4ba1de693d154cd611"
+version = "0.3.0"
+source = "git+https://github.com/sfackler/rust-phf.git#0a80b06ecde77b33cec8c956c67704613fdd313e"
 dependencies = [
  "xxhash 0.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -57,8 +57,8 @@ name = "rlisp"
 version = "0.0.1"
 dependencies = [
  "mpc 0.0.1",
- "phf 0.2.0 (git+https://github.com/sfackler/rust-phf.git)",
- "phf_mac 0.2.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf 0.3.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_mac 0.3.0 (git+https://github.com/sfackler/rust-phf.git)",
 ]
 
 [[package]]
