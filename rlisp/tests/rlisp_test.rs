@@ -173,3 +173,17 @@ fn test_recursion() {
     assert_eq!(rlisp.execute("(def {rev l} {if (== l {}) {list} {join (rev (tail l)) (list (head l))}})"), "()");
     assert_eq!(rlisp.execute("(rev {1 2 3})"), "{3 2 1}");
 }
+
+#[test]
+fn test_comments() {
+    let mut rlisp = Rlisp::new();
+
+    assert_eq!(rlisp.execute(r#"
+        (def {rev l} ; Reverse the given list
+             {if (== l {})
+                 {list}
+                 {join (rev (tail l))
+                       (list (head l))}})
+    "#), "()");
+    assert_eq!(rlisp.execute("(rev {1 2 3})"), "{3 2 1}");
+}

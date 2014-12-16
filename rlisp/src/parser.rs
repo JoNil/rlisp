@@ -8,6 +8,7 @@ pub struct Parser {
     char:    mpc::Parser,
     bool:    mpc::Parser,
     symbol:  mpc::Parser,
+    comment: mpc::Parser,
     expr:    mpc::Parser,
     sexpr:   mpc::Parser,
     qexpr:   mpc::Parser,
@@ -23,29 +24,34 @@ impl Parser {
             char:    mpc::Parser::new("char"),
             bool:    mpc::Parser::new("bool"),
             symbol:  mpc::Parser::new("symbol"),
+            comment: mpc::Parser::new("comment"),
             expr:    mpc::Parser::new("expr"),
             sexpr:   mpc::Parser::new("sexpr"),
             qexpr:   mpc::Parser::new("qexpr"),
             rlisp:   mpc::Parser::new("rlisp"),
         };
 
-        if let Some(e) = mpc::lang(mpc::DEFAULT,
-                "float   : /[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?/;\
-                 integer : /[-+]?[0-9]+/;\
-                 string  : /\"[^\"]*\"/;\
-                 char    : /\'[^\']\'/;\
-                 bool    : /#t/ | /#f/;\
-                 symbol  : /[a-zA-Z!$%&\\*\\+\\-\\.\\/:<=>\\?@^_~\\\\][0-9a-zA-Z!$%&\\*\\+\\-\\.\\/:<=>\\?@^_~\\\\]*/;\
-                 expr    : <float> | <integer> | <string> | <char> | <bool> | <symbol> | <sexpr> | <qexpr>;\
-                 sexpr   : '(' <expr>* ')';\
-                 qexpr   : '{' <expr>* '}';\
-                 rlisp   : /^/ <expr>* /$/;",
+        if let Some(e) = mpc::lang(mpc::DEFAULT, r###"
+                 float   : /[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?/;
+                 integer : /[-+]?[0-9]+/;
+                 string  : /\"[^\"]*\"/;
+                 char    : /\'[^\']\'/;
+                 bool    : /#t/ | /#f/;
+                 symbol  : /[a-zA-Z!$%&\*\+\-\.\/:<=>\?@^_~\\][0-9a-zA-Z!$%&\*\+\-\.\/:<=>\?@^_~\\]*/;
+                 comment : /;[^\r\n]*/;
+                 expr    : <float>   | <integer> | <string> | <char> | <bool> | <symbol> |
+                           <comment> | <sexpr>   | <qexpr>;
+                 sexpr   : '(' <expr>* ')';
+                 qexpr   : '{' <expr>* '}';
+                 rlisp   : /^/ <expr>* /$/;
+                 "###,
                 &[&mut parser.float,
                   &mut parser.integer,
                   &mut parser.string,
                   &mut parser.char,
                   &mut parser.bool,
                   &mut parser.symbol,
+                  &mut parser.comment,
                   &mut parser.expr,
                   &mut parser.sexpr,
                   &mut parser.qexpr,
@@ -64,7 +70,11 @@ impl Parser {
             Some(mpc::Result::Error(e)) => { return Cell::Error(e.to_string()); },
             None                        => { panic!("Internal parsing error") },
         };
-        parse_ast(&ast)
+        
+        match parse_ast(&ast) {
+            Some(cell) => cell,
+            None       => Cell::Nil,
+        }
     }
 }
 
@@ -76,6 +86,7 @@ impl Drop for Parser {
                          &mut self.char,
                          &mut self.bool,
                          &mut self.symbol,
+                         &mut self.comment,
                          &mut self.expr,
                          &mut self.sexpr,
                          &mut self.qexpr,
@@ -83,70 +94,80 @@ impl Drop for Parser {
     }
 }
 
-fn parse_ast(ast: &mpc::Ast) -> Cell {
+fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
 
     let tag: String = ast.get_tag();
 
     if tag[].find_str("float").is_some() {
         return match from_str(ast.get_contents()[].trim()) {
-            Some(f) => Cell::Float(f), None => Cell::Float(0.0)
+            Some(f) => Some(Cell::Float(f)),
+            None    => Some(Cell::Float(0.0)),
         };
     }
 
     if tag[].find_str("integer").is_some() {
         return match from_str(ast.get_contents()[].trim()) {
-            Some(i) => Cell::Integer(i), None => Cell::Integer(0)
+            Some(i) => Some(Cell::Integer(i)),
+            None    => Some(Cell::Integer(0)),
         };
     }
 
     if tag[].find_str("string").is_some() {
         let s = ast.get_contents();
-        return Cell::Str(s[].slice(1, s.len() - 1).to_string());
+        return Some(Cell::Str(s[].slice(1, s.len() - 1).to_string()));
     }
 
     if tag[].find_str("char").is_some() {
         let s = ast.get_contents();
-        return Cell::Char(s[].slice(1, s.len() - 1).char_at(0));
+        return Some(Cell::Char(s[].slice(1, s.len() - 1).char_at(0)));
     }
 
     if tag[].find_str("bool").is_some() {
         let s = ast.get_contents();
 
         if s[] == "#t" {
-            return Cell::Bool(true);
+            return Some(Cell::Bool(true));
         } else {
-            return Cell::Bool(false);
+            return Some(Cell::Bool(false));
         }
     }
 
     if tag[].find_str("symbol").is_some() {
         let s = ast.get_contents();
-        return Cell::Symbol(s);
+        return Some(Cell::Symbol(s));
     }
 
     if tag[].find_str("qexpr").is_some() {    
         let mut res: Vec<Cell> = Vec::new();
 
         for c in ast.child_iter().skip(1).take(ast.get_no_children() as uint - 2) {
-            res.push(parse_ast(&c));
+            if let Some(s) = parse_ast(&c) {
+                res.push(s);
+            }
         }
 
-       return Cell::Qexpr(res);
+       return Some(Cell::Qexpr(res));
     }
 
     if tag[].find_str("sexpr").is_some() {
         let mut res: Vec<Cell> = Vec::new();
 
         for c in ast.child_iter().skip(1).take(ast.get_no_children() as uint - 2) {
-            res.push(parse_ast(&c));
+            if let Some(s) = parse_ast(&c) {
+                res.push(s);
+            }
         }
 
-       return Cell::Sexpr(res);
+       return Some(Cell::Sexpr(res));
+    }
+
+    if tag[].find_str("comment").is_some() {
+       return None;
     }
 
     if tag[] == ">" {
         return parse_ast(&ast.get_child(1).expect("Internal grammer error"));
     }
 
-    Cell::Nil
+    None
 }

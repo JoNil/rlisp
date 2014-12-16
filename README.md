@@ -11,9 +11,11 @@ Todo
 - Fix empty list syntax
 - Change currying of lambdas to replace in the body
 - Implement missing builins
+- String escapes
 - Add type Type
 - Add literals of type Type
 - Lambda argument type checking
+- Type check lambdas at defenition time then don't run the validator at runtime
 - Add file type
 - GC
 
