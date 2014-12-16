@@ -9,6 +9,8 @@ use self::rustrt::mutex::{StaticNativeMutex, NATIVE_MUTEX_INIT};
 use std::c_str::CString;
 use std::mem;
 use std::ptr;
+use std::raw::Slice;
+use std::str;
 use std::string::String;
 
 mod ext_mpc {
@@ -300,6 +302,16 @@ mod ext_mpc {
 
 static MPC_GLOBAL_PARSER_LOCK: StaticNativeMutex = NATIVE_MUTEX_INIT;
 
+unsafe fn from_c_str_with_lifetime<'a>(s: *const i8) -> &'a str {
+    let s = s as *const u8;
+    let mut len = 0u;
+    while *s.offset(len as int) != 0 {
+        len += 1u;
+    }
+    let v: &'a [u8] = mem::transmute(Slice { data: s, len: len });
+    str::from_utf8(v).expect("from_c_str_with_lifetime passed invalid utf-8 data")
+}
+
 pub struct Error {
     error: *mut ext_mpc::MpcErr,
 }
@@ -347,19 +359,19 @@ impl Ast {
         }
     }
 
-    pub fn get_tag(&self) -> String {
+    pub fn get_tag<'a>(&'a self) -> &'a str {
         unsafe {
             let a = self.ast.as_ref().expect("Internal error");
             if a.tag.is_null() { panic!("Internal error"); }
-            CString::new(a.tag as *const i8, false).as_str().expect("Not utf-8").to_string()
+            from_c_str_with_lifetime(a.tag as *const i8)
         }
     }
 
-    pub fn get_contents(&self) -> String {
+    pub fn get_contents<'a>(&'a self) -> &'a str {
         unsafe {
             let a = self.ast.as_ref().expect("Internal error");
             if a.contents.is_null() { panic!("Internal error"); }
-            CString::new(a.contents as *const i8, false).as_str().expect("Not utf-8").to_string()
+            from_c_str_with_lifetime(a.contents as *const i8)
         }
     }
 

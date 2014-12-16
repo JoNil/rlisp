@@ -96,48 +96,48 @@ impl Drop for Parser {
 
 fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
 
-    let tag: String = ast.get_tag();
+    let tag = ast.get_tag();
 
-    if tag[].find_str("float").is_some() {
-        return match from_str(ast.get_contents()[].trim()) {
+    if tag.find_str("float").is_some() {
+        return match from_str(ast.get_contents().trim()) {
             Some(f) => Some(Cell::Float(f)),
             None    => Some(Cell::Float(0.0)),
         };
     }
 
-    if tag[].find_str("integer").is_some() {
-        return match from_str(ast.get_contents()[].trim()) {
+    if tag.find_str("integer").is_some() {
+        return match from_str(ast.get_contents().trim()) {
             Some(i) => Some(Cell::Integer(i)),
             None    => Some(Cell::Integer(0)),
         };
     }
 
-    if tag[].find_str("string").is_some() {
+    if tag.find_str("string").is_some() {
         let s = ast.get_contents();
-        return Some(Cell::Str(s[].slice(1, s.len() - 1).to_string()));
+        return Some(Cell::Str(s.slice(1, s.len() - 1).to_string()));
     }
 
-    if tag[].find_str("char").is_some() {
+    if tag.find_str("char").is_some() {
         let s = ast.get_contents();
-        return Some(Cell::Char(s[].slice(1, s.len() - 1).char_at(0)));
+        return Some(Cell::Char(s.slice(1, s.len() - 1).char_at(0)));
     }
 
-    if tag[].find_str("bool").is_some() {
+    if tag.find_str("bool").is_some() {
         let s = ast.get_contents();
 
-        if s[] == "#t" {
+        if s == "#t" {
             return Some(Cell::Bool(true));
         } else {
             return Some(Cell::Bool(false));
         }
     }
 
-    if tag[].find_str("symbol").is_some() {
+    if tag.find_str("symbol").is_some() {
         let s = ast.get_contents();
-        return Some(Cell::Symbol(s));
+        return Some(Cell::Symbol(s.to_string()));
     }
 
-    if tag[].find_str("qexpr").is_some() {    
+    if tag.find_str("qexpr").is_some() {    
         let mut res: Vec<Cell> = Vec::new();
 
         for c in ast.child_iter().skip(1).take(ast.get_no_children() as uint - 2) {
@@ -149,7 +149,7 @@ fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
        return Some(Cell::Qexpr(res));
     }
 
-    if tag[].find_str("sexpr").is_some() {
+    if tag.find_str("sexpr").is_some() {
         let mut res: Vec<Cell> = Vec::new();
 
         for c in ast.child_iter().skip(1).take(ast.get_no_children() as uint - 2) {
@@ -161,11 +161,11 @@ fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
        return Some(Cell::Sexpr(res));
     }
 
-    if tag[].find_str("comment").is_some() {
+    if tag.find_str("comment").is_some() {
        return None;
     }
 
-    if tag[] == ">" {
+    if tag == ">" {
         return parse_ast(&ast.get_child(1).expect("Internal grammer error"));
     }
 
