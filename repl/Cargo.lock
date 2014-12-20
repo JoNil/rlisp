@@ -8,45 +8,42 @@ dependencies = [
 
 [[package]]
 name = "gcc"
-version = "0.1.1"
-source = "git+https://github.com/alexcrichton/gcc-rs#d35c34c871dd75f97fadf04cb0ed85d997a9bc0c"
+version = "0.1.2"
+source = "git+https://github.com/alexcrichton/gcc-rs#f7b47d923a78155f88d13c7030e61445d46b3245"
 
 [[package]]
 name = "gcc"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "mpc"
 version = "0.0.1"
 dependencies = [
- "gcc 0.1.1 (git+https://github.com/alexcrichton/gcc-rs)",
+ "gcc 0.1.2 (git+https://github.com/alexcrichton/gcc-rs)",
 ]
 
 [[package]]
 name = "phf"
-version = "0.3.0"
-source = "git+https://github.com/sfackler/rust-phf.git#0a80b06ecde77b33cec8c956c67704613fdd313e"
+version = "0.4.0"
+source = "git+https://github.com/JoNil/rust-phf.git#f31924605bdbd6fd537363d227198e7d492872d7"
 dependencies = [
- "phf_shared 0.3.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_shared 0.4.0 (git+https://github.com/JoNil/rust-phf.git)",
 ]
 
 [[package]]
 name = "phf_mac"
-version = "0.3.0"
-source = "git+https://github.com/sfackler/rust-phf.git#0a80b06ecde77b33cec8c956c67704613fdd313e"
+version = "0.4.0"
+source = "git+https://github.com/JoNil/rust-phf.git#f31924605bdbd6fd537363d227198e7d492872d7"
 dependencies = [
- "phf_shared 0.3.0 (git+https://github.com/sfackler/rust-phf.git)",
- "time 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "phf_shared 0.4.0 (git+https://github.com/JoNil/rust-phf.git)",
+ "time 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "phf_shared"
-version = "0.3.0"
-source = "git+https://github.com/sfackler/rust-phf.git#0a80b06ecde77b33cec8c956c67704613fdd313e"
-dependencies = [
- "xxhash 0.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
-]
+version = "0.4.0"
+source = "git+https://github.com/JoNil/rust-phf.git#f31924605bdbd6fd537363d227198e7d492872d7"
 
 [[package]]
 name = "readline"
@@ -57,20 +54,15 @@ name = "rlisp"
 version = "0.0.1"
 dependencies = [
  "mpc 0.0.1",
- "phf 0.3.0 (git+https://github.com/sfackler/rust-phf.git)",
- "phf_mac 0.3.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf 0.4.0 (git+https://github.com/JoNil/rust-phf.git)",
+ "phf_mac 0.4.0 (git+https://github.com/JoNil/rust-phf.git)",
 ]
 
 [[package]]
 name = "time"
-version = "0.1.2"
+version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "gcc 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gcc 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
-
-[[package]]
-name = "xxhash"
-version = "0.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
 

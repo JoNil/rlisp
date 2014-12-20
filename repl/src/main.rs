@@ -8,7 +8,7 @@ static PROMPT: &'static str = "rlisp> ";
 fn main() {
     os::setenv("RUST_BACKTRACE", "1");
 
-    println!("Rusty Lisp");
+    println!("RLisp");
 
     let mut rlisp = rlisp::Rlisp::new();
 
