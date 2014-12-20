@@ -1,3 +1,4 @@
 language: rust
 script:
   - (cd rlisp && cargo test)
+sudo: false
