@@ -1,10 +1,8 @@
 #![allow(dead_code)]
 
 extern crate libc;
-extern crate rustrt;
 
 use self::libc::c_int;
-use self::rustrt::mutex::{StaticNativeMutex, NATIVE_MUTEX_INIT};
 
 use std::c_str::CString;
 use std::mem;
@@ -12,6 +10,7 @@ use std::ptr;
 use std::raw::Slice;
 use std::str;
 use std::string::String;
+use std::sync::{StaticMutex, MUTEX_INIT};
 
 mod ext_mpc {
 
@@ -300,7 +299,7 @@ mod ext_mpc {
     }
 }
 
-static MPC_GLOBAL_PARSER_LOCK: StaticNativeMutex = NATIVE_MUTEX_INIT;
+static MPC_GLOBAL_PARSER_LOCK: StaticMutex = MUTEX_INIT;
 
 unsafe fn from_c_str_with_lifetime<'a>(s: *const i8) -> &'a str {
     let s = s as *const u8;
