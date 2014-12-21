@@ -3,7 +3,7 @@ extern crate rlisp;
 
 use std::os;
 
-static PROMPT: &'static str = "rlisp> ";
+const PROMPT: &'static str = "rlisp> ";
 
 fn main() {
     os::setenv("RUST_BACKTRACE", "1");
