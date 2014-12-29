@@ -308,7 +308,7 @@ unsafe fn from_c_str_with_lifetime<'a>(s: *const i8) -> &'a str {
         len += 1u;
     }
     let v: &'a [u8] = mem::transmute(Slice { data: s, len: len });
-    str::from_utf8(v).expect("from_c_str_with_lifetime passed invalid utf-8 data")
+    str::from_utf8(v).unwrap()
 }
 
 pub struct Error {

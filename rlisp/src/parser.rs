@@ -99,14 +99,14 @@ fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
     let tag = ast.get_tag();
 
     if tag.find_str("float").is_some() {
-        return match from_str(ast.get_contents().trim()) {
+        return match ast.get_contents().trim().parse() {
             Some(f) => Some(Cell::Float(f)),
             None    => Some(Cell::Float(0.0)),
         };
     }
 
     if tag.find_str("integer").is_some() {
-        return match from_str(ast.get_contents().trim()) {
+        return match ast.get_contents().trim().parse() {
             Some(i) => Some(Cell::Integer(i)),
             None    => Some(Cell::Integer(0)),
         };
