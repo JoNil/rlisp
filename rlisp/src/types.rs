@@ -1,5 +1,5 @@
 use std::fmt;
-use std::str::CowString;
+use std::string::CowString;
 
 use cell;
 use self::Type::*;
@@ -9,7 +9,7 @@ use cell::Cell::*;
 #[cfg(test)]
 use globals;
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub enum Type {
     NilT,
     SymbolT,

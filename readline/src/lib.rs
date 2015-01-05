@@ -2,6 +2,7 @@
 
 extern crate libc;
 
+use std::c_str::ToCStr;
 use std::c_str;
 
 mod ext_readline {

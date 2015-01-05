@@ -1,5 +1,5 @@
 use std::fmt;
-use std::str::CowString;
+use std::string::CowString;
 
 #[cfg(test)]
 use std::mem;
@@ -18,20 +18,20 @@ pub struct BuiltinFunctionSpec {
     pub argument_types: &'static [Type],
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct CurriedBuiltinSpec {
     pub builtin: &'static BuiltinFunctionSpec,
     pub bound_args: Vec<Cell>,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct LambdaSpec {
     pub arguments: Vec<Cell>,
     pub body: Vec<Cell>,
     pub environment: Environment,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub enum Cell {
     Nil,
     Symbol(String),

@@ -11,7 +11,7 @@ struct EnvironmentImpl {
     enclosing: Option<Weak<RefCell<EnvironmentImpl>>>,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct Environment(Rc<RefCell<EnvironmentImpl>>);
 
 impl Environment {

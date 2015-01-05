@@ -1,3 +1,4 @@
+#![feature(associated_types)]
 #![allow(dead_code)]
 
 extern crate libc;
@@ -5,6 +6,7 @@ extern crate libc;
 use self::libc::c_int;
 
 use std::c_str::CString;
+use std::c_str::ToCStr;
 use std::mem;
 use std::ptr;
 use std::raw::Slice;
@@ -413,7 +415,9 @@ pub struct AstChildIterator<'a> {
     index: int,
 }
 
-impl<'a> Iterator<Ast> for AstChildIterator<'a> {
+impl<'a> Iterator for AstChildIterator<'a> {
+    type Item = Ast;
+    
     fn next(&mut self) -> Option<Ast> {
         self.index += 1;
         self.ast.get_child(self.index-1)
