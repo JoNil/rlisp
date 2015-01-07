@@ -1,11 +1,11 @@
-#![feature(globs)]
-#![feature(phase)]
+#![feature(plugin)]
 #![feature(slicing_syntax)]
 
 extern crate mpc;
 extern crate phf;
 
-#[phase(plugin)]
+#[plugin]
+#[no_link]
 extern crate phf_mac;
 
 use cell::{Cell, CurriedBuiltinSpec, LambdaSpec};
