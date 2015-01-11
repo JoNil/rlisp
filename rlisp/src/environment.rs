@@ -36,7 +36,7 @@ impl Environment {
             (Some(c), _)         => c.clone(),
             (None, &Some(ref e)) => Environment(e.upgrade().expect("Internal error")).lookup(key),
             (None, &None)        => {
-                match globals::GLOBAL_ENVIROMENT.get(key[]) {
+                match globals::GLOBAL_ENVIROMENT.get(key.as_slice()) {
                     Some(bfs) => Cell::Builtin(bfs),
                     None      => Cell::Error(format!("Undefined symbol: {}", key))
                 }

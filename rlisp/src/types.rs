@@ -1,4 +1,5 @@
 use std::fmt;
+use std::str::Str as StrTrait;
 use std::string::CowString;
 
 use cell;
@@ -53,9 +54,9 @@ impl Type {
                 let mut temp: String = "(".to_string();
                 for i in range(0, v.len()) {
                     if i == v.len() - 1 {
-                        temp.push_str(format!("{}", v[i])[]);
+                        temp.push_str(format!("{}", v[i]).as_slice());
                     } else {
-                        temp.push_str(format!("{} ", v[i])[]);
+                        temp.push_str(format!("{} ", v[i]).as_slice());
                     }
                 }
                 temp.push_str(")");
@@ -65,9 +66,9 @@ impl Type {
                 let mut temp: String = "{".to_string();
                 for i in range(0, v.len()) {
                     if i == v.len() - 1 {
-                        temp.push_str(format!("{}", v[i])[]);
+                        temp.push_str(format!("{}", v[i]).as_slice());
                     } else {
-                        temp.push_str(format!("{} ", v[i])[]);
+                        temp.push_str(format!("{} ", v[i]).as_slice());
                     }
                 }
                 temp.push_str("}");
@@ -77,9 +78,9 @@ impl Type {
                 let mut temp: String = "(".to_string();
                 for i in range(0, v.len()) {
                     if i == v.len() - 1 {
-                        temp.push_str(format!("{}", v[i])[]);
+                        temp.push_str(format!("{}", v[i]).as_slice());
                     } else {
-                        temp.push_str(format!("{} ", v[i])[]);
+                        temp.push_str(format!("{} ", v[i]).as_slice());
                     }
                 }
                 temp.push_str(")");
@@ -89,9 +90,9 @@ impl Type {
                 let mut temp: String = "{".to_string();
                 for i in range(0, v.len()) {
                     if i == v.len() - 1 {
-                        temp.push_str(format!("{}", v[i])[]);
+                        temp.push_str(format!("{}", v[i]).as_slice());
                     } else {
-                        temp.push_str(format!("{} ", v[i])[]);
+                        temp.push_str(format!("{} ", v[i]).as_slice());
                     }
                 }
                 temp.push_str("}");
@@ -105,6 +106,12 @@ impl Type {
             OptionalT(ref inner) => Owned(format!("[{}]", inner)),
             OrT(ref i1, ref i2)  => Owned(format!("{}|{}", i1, i2)),
         }
+    }
+}
+
+impl fmt::String for Type {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.to_string())
     }
 }
 
@@ -160,22 +167,22 @@ fn validate_inner(argument_types: &[Type], args: &[cell::Cell]) -> Option<String
 
         match (arg, arg_type) {
             (&cell::Cell::Sexpr(ref v), &SexprT(ref vt)) => {
-                if let Some(e) = validate_inner(vt[], v[]) {
+                if let Some(e) = validate_inner(vt.as_slice(), v.as_slice()) {
                     return Some(format!("argument list at {}: {}", i+1, e));
                 }
             },
             (&cell::Cell::Sexpr(ref v), &RSexprT(ref vt)) => {
-                if let Some(e) = validate_inner(vt[], v[]) {
+                if let Some(e) = validate_inner(vt.as_slice(), v.as_slice()) {
                     return Some(format!("argument list at {}: {}", i+1, e));
                 }
             },
             (&cell::Cell::Qexpr(ref v), &QexprT(ref vt)) => {
-                if let Some(e) = validate_inner(vt[], v[]) {
+                if let Some(e) = validate_inner(vt.as_slice(), v.as_slice()) {
                     return Some(format!("argument list at {}: {}", i+1, e));
                 }
             },
             (&cell::Cell::Qexpr(ref v), &RQexprT(ref vt)) => {
-                if let Some(e) = validate_inner(vt[], v[]) {
+                if let Some(e) = validate_inner(vt.as_slice(), v.as_slice()) {
                     return Some(format!("argument list at {}: {}", i+1, e));
                 }
             },
@@ -220,7 +227,7 @@ fn validate_inner(argument_types: &[Type], args: &[cell::Cell]) -> Option<String
 }
 
 pub fn validate(f: &cell::BuiltinFunctionSpec, args: &[cell::Cell]) -> Option<String> {
-    match validate_inner(f.argument_types[], args) {
+    match validate_inner(f.argument_types.as_slice(), args) {
         Some(e) => Some(format!("{}, {}", f.name, e)),
         None    => None,
     }

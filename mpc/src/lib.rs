@@ -1,3 +1,4 @@
+#![allow(unstable)]
 #![allow(dead_code)]
 
 extern crate libc;
@@ -306,11 +307,11 @@ static MPC_GLOBAL_PARSER_LOCK: StaticMutex = MUTEX_INIT;
 
 unsafe fn from_c_str_with_lifetime<'a>(s: *const i8) -> &'a str {
     let s = s as *const u8;
-    let mut len = 0u;
-    while *s.offset(len as int) != 0 {
-        len += 1u;
+    let mut len = 0i32;
+    while *s.offset(len as isize) != 0 {
+        len += 1i32;
     }
-    let v: &'a [u8] = mem::transmute(Slice { data: s, len: len });
+    let v: &'a [u8] = mem::transmute(Slice { data: s, len: len as usize });
     str::from_utf8(v).unwrap()
 }
 
@@ -379,21 +380,21 @@ impl Ast {
         }
     }
 
-    pub fn get_no_children(&self) -> int {
+    pub fn get_no_children(&self) -> i32 {
         unsafe {
             let a = self.ast.as_ref().expect("Internal error");
-            a.children_num as int
+            a.children_num as i32
         }
     }
 
-    pub fn get_child(&self, index: int) -> Option<Ast> {
+    pub fn get_child(&self, index: i32) -> Option<Ast> {
         let a = unsafe { match self.ast.as_ref() { Some(a) => a, None => return None } };
 
-        if index >= a.children_num as int {
+        if index >= a.children_num as i32 {
             return None
         }
 
-         Some(Ast { ast: unsafe { *a.children.offset(index) }, owning: false })
+         Some(Ast { ast: unsafe { *a.children.offset(index as isize) }, owning: false })
     }
 
     pub fn child_iter(&self) -> AstChildIterator {
@@ -415,7 +416,7 @@ impl Drop for Ast {
 
 pub struct AstChildIterator<'a> {
     ast: &'a Ast,
-    index: int,
+    index: i32,
 }
 
 impl<'a> Iterator for AstChildIterator<'a> {

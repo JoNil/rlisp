@@ -58,7 +58,7 @@ impl Parser {
                   &mut parser.rlisp]) {
 
             let error = e.to_string();
-            panic!("{}", error[]);
+            panic!("{}", error.as_slice());
         }
 
         parser
@@ -140,7 +140,7 @@ fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
     if tag.find_str("qexpr").is_some() {    
         let mut res: Vec<Cell> = Vec::new();
 
-        for c in ast.child_iter().skip(1).take(ast.get_no_children() as uint - 2) {
+        for c in ast.child_iter().skip(1).take((ast.get_no_children() - 2) as usize) {
             if let Some(s) = parse_ast(&c) {
                 res.push(s);
             }
@@ -152,7 +152,7 @@ fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
     if tag.find_str("sexpr").is_some() {
         let mut res: Vec<Cell> = Vec::new();
 
-        for c in ast.child_iter().skip(1).take(ast.get_no_children() as uint - 2) {
+        for c in ast.child_iter().skip(1).take((ast.get_no_children() - 2) as usize) {
             if let Some(s) = parse_ast(&c) {
                 res.push(s);
             }

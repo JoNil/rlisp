@@ -1,7 +1,10 @@
+#![allow(unstable)]
+
 extern crate readline;
 extern crate rlisp;
 
 use std::os;
+use std::str::Str;
 
 const PROMPT: &'static str = "rlisp> ";
 
@@ -17,6 +20,6 @@ fn main() {
             Some(line) => line, None => return
         };
 
-        println!("{}", rlisp.execute(line[]));
+        println!("{}", rlisp.execute(line.as_slice()));
     }
 }

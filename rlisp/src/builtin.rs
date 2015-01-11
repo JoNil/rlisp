@@ -181,7 +181,7 @@ pub fn join(_: Environment, args: &[Cell]) -> Cell {
 
     for arg in args.iter() {
          match arg {
-            &Qexpr(ref v) => res.push_all(v[]),
+            &Qexpr(ref v) => res.push_all(v.as_slice()),
             _             => internal_error(),
          }
     }
@@ -335,9 +335,9 @@ pub fn if_func(env: Environment, args: &[Cell]) -> Cell {
      match args {
         [Bool(cond), _, _] => {
             if cond {
-                eval(env.clone(), args[1..2])
+                eval(env.clone(), args[1..2].as_slice())
             } else {
-                eval(env.clone(), args[2..3])
+                eval(env.clone(), args[2..3].as_slice())
             }
         },
         _ => internal_error(),
@@ -346,17 +346,17 @@ pub fn if_func(env: Environment, args: &[Cell]) -> Cell {
 
 pub fn def(env: Environment, args: &[Cell]) -> Cell {
     match args {
-        [Qexpr(ref v), ref b] => match (v[], b) {
+        [Qexpr(ref v), ref b] => match (v.as_slice(), b) {
             ([Symbol(ref s)], b) => {
                 env.insert_top(s, b);
                 Nil
             },
             ([Symbol(ref s), args..], &Qexpr(ref body)) => {
-                let lambda = Lambda(box LambdaSpec {
+                let lambda = Lambda(Box::new(LambdaSpec {
                     arguments:   args.to_vec(),
                     body:        body.clone(),
                     environment: env.clone(),
-                });
+                }));
                 env.insert_top(s, &lambda);
                 Nil
             },
@@ -371,7 +371,7 @@ pub fn def(env: Environment, args: &[Cell]) -> Cell {
 
 pub fn set(env: Environment, args: &[Cell]) -> Cell {
     match args {
-        [Qexpr(ref v), ref b] => match v[] {
+        [Qexpr(ref v), ref b] => match v.as_slice() {
             [Symbol(ref s)] => {
                 env.insert(s, b);
                 Nil
@@ -385,11 +385,11 @@ pub fn set(env: Environment, args: &[Cell]) -> Cell {
 pub fn lambda(env: Environment, args: &[Cell]) -> Cell {
     match args {
         [Qexpr(ref args), Qexpr(ref body)] => {
-            Lambda(box LambdaSpec {
+            Lambda(Box::new(LambdaSpec {
                 arguments:   args.clone(),
                 body:        body.clone(),
                 environment: env,
-            })
+            }))
         },
         _ => internal_error(),
     }

@@ -1,4 +1,5 @@
 use std::fmt;
+use std::str::Str as StrTrait;
 use std::string::CowString;
 
 #[cfg(test)]
@@ -134,9 +135,9 @@ impl Cell {
                 let mut temp: String = "(".to_string();
                 for i in range(0, v.len()) {
                     if i == v.len() - 1 {
-                        temp.push_str(format!("{}", v[i])[]);
+                        temp.push_str(format!("{}", v[i]).as_slice());
                     } else {
-                        temp.push_str(format!("{} ", v[i])[]);
+                        temp.push_str(format!("{} ", v[i]).as_slice());
                     }
                 }
                 temp.push_str(")");
@@ -146,9 +147,9 @@ impl Cell {
                 let mut temp: String = "{".to_string();
                 for i in range(0, v.len()) {
                     if i == v.len() - 1 {
-                        temp.push_str(format!("{}", v[i])[]);
+                        temp.push_str(format!("{}", v[i]).as_slice());
                     } else {
-                        temp.push_str(format!("{} ", v[i])[]);
+                        temp.push_str(format!("{} ", v[i]).as_slice());
                     }
                 }
                 temp.push_str("}");
@@ -159,9 +160,9 @@ impl Cell {
                 let mut temp: String = String::new();
                 for (i, t) in f.argument_types.iter().enumerate() {
                     if i == f.argument_types.len() - 1 {
-                        temp.push_str(format!("{}", t)[]);
+                        temp.push_str(format!("{}", t).as_slice());
                     } else {
-                        temp.push_str(format!("{} ", t)[]);
+                        temp.push_str(format!("{} ", t).as_slice());
                     }
                 }
                 Owned(format!("func: ({} {})", f.name, temp))
@@ -171,9 +172,9 @@ impl Cell {
                 for (i, t) in cb.builtin.argument_types.iter().enumerate() {
                     if i >= cb.bound_args.len() {
                         if i == cb.builtin.argument_types.len() - 1 {
-                            temp.push_str(format!("{}", t)[]);
+                            temp.push_str(format!("{}", t).as_slice());
                         } else {
-                            temp.push_str(format!("{} ", t)[]);
+                            temp.push_str(format!("{} ", t).as_slice());
                         }
                     }
                 }
@@ -182,6 +183,12 @@ impl Cell {
             &Lambda(ref l) => Owned(format!("(lambda {} {})",
                                     Qexpr(l.arguments.clone()), Qexpr(l.body.clone()))),
         }
+    }
+}
+
+impl fmt::String for Cell {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.to_string())
     }
 }
 
