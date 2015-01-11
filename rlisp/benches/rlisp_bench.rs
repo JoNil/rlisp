@@ -1,3 +1,5 @@
+#![allow(unstable)]
+
 extern crate rlisp;
 extern crate test;
 
