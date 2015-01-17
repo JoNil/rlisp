@@ -20,24 +20,24 @@ dependencies = [
 
 [[package]]
 name = "phf"
-version = "0.4.9"
-source = "git+https://github.com/sfackler/rust-phf.git#5135f029157d13bde463740e75140f9c4403edaa"
+version = "0.5.0"
+source = "git+https://github.com/sfackler/rust-phf.git#8683be260effe5605243ef230bad6154ef4e5e20"
 dependencies = [
- "phf_shared 0.4.9 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_shared 0.5.0 (git+https://github.com/sfackler/rust-phf.git)",
 ]
 
 [[package]]
 name = "phf_mac"
-version = "0.4.9"
-source = "git+https://github.com/sfackler/rust-phf.git#5135f029157d13bde463740e75140f9c4403edaa"
+version = "0.5.0"
+source = "git+https://github.com/sfackler/rust-phf.git#8683be260effe5605243ef230bad6154ef4e5e20"
 dependencies = [
- "phf_shared 0.4.9 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_shared 0.5.0 (git+https://github.com/sfackler/rust-phf.git)",
 ]
 
 [[package]]
 name = "phf_shared"
-version = "0.4.9"
-source = "git+https://github.com/sfackler/rust-phf.git#5135f029157d13bde463740e75140f9c4403edaa"
+version = "0.5.0"
+source = "git+https://github.com/sfackler/rust-phf.git#8683be260effe5605243ef230bad6154ef4e5e20"
 
 [[package]]
 name = "readline"
@@ -48,7 +48,7 @@ name = "rlisp"
 version = "0.0.1"
 dependencies = [
  "mpc 0.0.1",
- "phf 0.4.9 (git+https://github.com/sfackler/rust-phf.git)",
- "phf_mac 0.4.9 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf 0.5.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_mac 0.5.0 (git+https://github.com/sfackler/rust-phf.git)",
 ]
 
