@@ -7,37 +7,43 @@ dependencies = [
 ]
 
 [[package]]
+name = "bitflags"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
 name = "gcc"
-version = "0.1.4"
-source = "git+https://github.com/alexcrichton/gcc-rs#f5c52d956e0742a66e40c8301e634e136c3ae287"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "mpc"
 version = "0.0.1"
 dependencies = [
- "gcc 0.1.4 (git+https://github.com/alexcrichton/gcc-rs)",
+ "bitflags 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gcc 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "phf"
 version = "0.5.0"
-source = "git+https://github.com/sfackler/rust-phf.git#8683be260effe5605243ef230bad6154ef4e5e20"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "phf_shared 0.5.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_shared 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "phf_mac"
 version = "0.5.0"
-source = "git+https://github.com/sfackler/rust-phf.git#8683be260effe5605243ef230bad6154ef4e5e20"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "phf_shared 0.5.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf_shared 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "phf_shared"
 version = "0.5.0"
-source = "git+https://github.com/sfackler/rust-phf.git#8683be260effe5605243ef230bad6154ef4e5e20"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "readline"
@@ -48,7 +54,7 @@ name = "rlisp"
 version = "0.0.1"
 dependencies = [
  "mpc 0.0.1",
- "phf 0.5.0 (git+https://github.com/sfackler/rust-phf.git)",
- "phf_mac 0.5.0 (git+https://github.com/sfackler/rust-phf.git)",
+ "phf 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "phf_mac 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

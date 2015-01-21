@@ -1,6 +1,8 @@
 #![allow(unstable)]
 #![allow(dead_code)]
 
+#[macro_use]
+extern crate bitflags;
 extern crate libc;
 
 use self::libc::c_char;

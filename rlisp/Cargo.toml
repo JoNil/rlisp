@@ -7,8 +7,6 @@ authors = ["Jonathan Nilsson <lord.jonil@gmail.com>"]
 [dependencies.mpc]
 path = "../mpc"
 
-[dependencies.phf]
-git = "https://github.com/sfackler/rust-phf.git"
-
-[dependencies.phf_mac]
-git = "https://github.com/sfackler/rust-phf.git"
+[dependencies]
+phf = "*"
+phf_mac = "*"
