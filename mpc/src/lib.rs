@@ -1,5 +1,8 @@
-#![allow(unstable)]
 #![allow(dead_code)]
+
+#![feature(core)]
+#![feature(libc)]
+#![feature(std_misc)]
 
 #[macro_use]
 extern crate bitflags;

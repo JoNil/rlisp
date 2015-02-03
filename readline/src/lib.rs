@@ -1,5 +1,7 @@
-#![allow(unstable)]
+#![feature(core)]
+#![feature(libc)]
 #![feature(slicing_syntax)]
+#![feature(std_misc)]
 
 extern crate libc;
 

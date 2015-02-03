@@ -1,5 +1,7 @@
-#![allow(unstable)]
+#![feature(alloc)]
 #![feature(box_syntax)]
+#![feature(collections)]
+#![feature(core)]
 #![feature(plugin)]
 #![feature(slicing_syntax)]
 

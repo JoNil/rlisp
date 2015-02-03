@@ -58,7 +58,7 @@ impl Parser {
                   &mut parser.rlisp]) {
 
             let error = e.to_string();
-            panic!("{}", error.as_slice());
+            panic!("{}", error);
         }
 
         parser
@@ -100,26 +100,26 @@ fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
 
     if tag.find_str("float").is_some() {
         return match ast.get_contents().trim().parse() {
-            Some(f) => Some(Cell::Float(f)),
-            None    => Some(Cell::Float(0.0)),
+            Ok(f)  => Some(Cell::Float(f)),
+            Err(_) => Some(Cell::Float(0.0)),
         };
     }
 
     if tag.find_str("integer").is_some() {
         return match ast.get_contents().trim().parse() {
-            Some(i) => Some(Cell::Integer(i)),
-            None    => Some(Cell::Integer(0)),
+            Ok(i)  => Some(Cell::Integer(i)),
+            Err(_) => Some(Cell::Integer(0)),
         };
     }
 
     if tag.find_str("string").is_some() {
         let s = ast.get_contents();
-        return Some(Cell::Str(s.slice(1, s.len() - 1).to_string()));
+        return Some(Cell::Str(s[1 .. s.len() - 1].to_string()));
     }
 
     if tag.find_str("char").is_some() {
         let s = ast.get_contents();
-        return Some(Cell::Char(s.slice(1, s.len() - 1).char_at(0)));
+        return Some(Cell::Char(s[1 .. s.len() - 1].char_at(0)));
     }
 
     if tag.find_str("bool").is_some() {

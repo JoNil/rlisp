@@ -1,4 +1,4 @@
-#![allow(unstable)]
+#![feature(os)]
 
 extern crate gcc;
 

@@ -186,15 +186,15 @@ impl Cell {
     }
 }
 
-impl fmt::String for Cell {
+impl fmt::Display for Cell {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.to_string())
     }
 }
 
-impl fmt::Show for Cell {
+impl fmt::Debug for Cell {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.to_string())
+        write!(f, "{:?}", self.to_string())
     }
 }
 
