@@ -1,15 +1,15 @@
-#![feature(os)]
+#![feature(env)]
 
 extern crate readline;
 extern crate rlisp;
 
-use std::os;
+use std::env;
 use std::str::Str;
 
 const PROMPT: &'static str = "rlisp> ";
 
 fn main() {
-    os::setenv("RUST_BACKTRACE", "1");
+    env::set_var("RUST_BACKTRACE", "1");
 
     println!("RLisp");
 
