@@ -1,6 +1,5 @@
+use std::borrow::Cow;
 use std::fmt;
-use std::str::Str as StrTrait;
-use std::string::CowString;
 
 #[cfg(test)]
 use std::mem;
@@ -120,7 +119,7 @@ impl Cell {
         }
     }
 
-    fn to_string(&self) -> CowString {
+    fn to_string<'a>(&self) -> Cow<'a, str> {
         use std::borrow::Cow::{Borrowed, Owned};
 
         match self {
@@ -133,11 +132,11 @@ impl Cell {
             &Str(ref s)      => Owned(format!("\"{}\"", s)),
             &Sexpr(ref v)    => {
                 let mut temp: String = "(".to_string();
-                for i in range(0, v.len()) {
+                for i in 0..v.len() {
                     if i == v.len() - 1 {
-                        temp.push_str(format!("{}", v[i]).as_slice());
+                        temp.push_str(&format!("{}", v[i])[..]);
                     } else {
-                        temp.push_str(format!("{} ", v[i]).as_slice());
+                        temp.push_str(&format!("{} ", v[i])[..]);
                     }
                 }
                 temp.push_str(")");
@@ -145,11 +144,11 @@ impl Cell {
             },
             &Qexpr(ref v) => {
                 let mut temp: String = "{".to_string();
-                for i in range(0, v.len()) {
+                for i in 0..v.len() {
                     if i == v.len() - 1 {
-                        temp.push_str(format!("{}", v[i]).as_slice());
+                        temp.push_str(&format!("{}", v[i])[..]);
                     } else {
-                        temp.push_str(format!("{} ", v[i]).as_slice());
+                        temp.push_str(&format!("{} ", v[i])[..]);
                     }
                 }
                 temp.push_str("}");
@@ -160,9 +159,9 @@ impl Cell {
                 let mut temp: String = String::new();
                 for (i, t) in f.argument_types.iter().enumerate() {
                     if i == f.argument_types.len() - 1 {
-                        temp.push_str(format!("{}", t).as_slice());
+                        temp.push_str(&format!("{}", t)[..]);
                     } else {
-                        temp.push_str(format!("{} ", t).as_slice());
+                        temp.push_str(&format!("{} ", t)[..]);
                     }
                 }
                 Owned(format!("func: ({} {})", f.name, temp))
@@ -172,9 +171,9 @@ impl Cell {
                 for (i, t) in cb.builtin.argument_types.iter().enumerate() {
                     if i >= cb.bound_args.len() {
                         if i == cb.builtin.argument_types.len() - 1 {
-                            temp.push_str(format!("{}", t).as_slice());
+                            temp.push_str(&format!("{}", t)[..]);
                         } else {
-                            temp.push_str(format!("{} ", t).as_slice());
+                            temp.push_str(&format!("{} ", t)[..]);
                         }
                     }
                 }

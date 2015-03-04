@@ -98,31 +98,31 @@ fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
 
     let tag = ast.get_tag();
 
-    if tag.find_str("float").is_some() {
+    if tag.find("float").is_some() {
         return match ast.get_contents().trim().parse() {
             Ok(f)  => Some(Cell::Float(f)),
             Err(_) => Some(Cell::Float(0.0)),
         };
     }
 
-    if tag.find_str("integer").is_some() {
+    if tag.find("integer").is_some() {
         return match ast.get_contents().trim().parse() {
             Ok(i)  => Some(Cell::Integer(i)),
             Err(_) => Some(Cell::Integer(0)),
         };
     }
 
-    if tag.find_str("string").is_some() {
+    if tag.find("string").is_some() {
         let s = ast.get_contents();
         return Some(Cell::Str(s[1 .. s.len() - 1].to_string()));
     }
 
-    if tag.find_str("char").is_some() {
+    if tag.find("char").is_some() {
         let s = ast.get_contents();
-        return Some(Cell::Char(s[1 .. s.len() - 1].char_at(0)));
+        return Some(Cell::Char(s.char_at(0)));
     }
 
-    if tag.find_str("bool").is_some() {
+    if tag.find("bool").is_some() {
         let s = ast.get_contents();
 
         if s == "#t" {
@@ -132,12 +132,12 @@ fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
         }
     }
 
-    if tag.find_str("symbol").is_some() {
+    if tag.find("symbol").is_some() {
         let s = ast.get_contents();
         return Some(Cell::Symbol(s.to_string()));
     }
 
-    if tag.find_str("qexpr").is_some() {    
+    if tag.find("qexpr").is_some() {    
         let mut res: Vec<Cell> = Vec::new();
 
         for c in ast.child_iter().skip(1).take((ast.get_no_children() - 2) as usize) {
@@ -149,7 +149,7 @@ fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
        return Some(Cell::Qexpr(res));
     }
 
-    if tag.find_str("sexpr").is_some() {
+    if tag.find("sexpr").is_some() {
         let mut res: Vec<Cell> = Vec::new();
 
         for c in ast.child_iter().skip(1).take((ast.get_no_children() - 2) as usize) {
@@ -161,7 +161,7 @@ fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
        return Some(Cell::Sexpr(res));
     }
 
-    if tag.find_str("comment").is_some() {
+    if tag.find("comment").is_some() {
        return None;
     }
 

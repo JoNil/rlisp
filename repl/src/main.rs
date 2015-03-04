@@ -1,10 +1,7 @@
-#![feature(env)]
-
 extern crate readline;
 extern crate rlisp;
 
 use std::env;
-use std::str::Str;
 
 const PROMPT: &'static str = "rlisp> ";
 
@@ -20,6 +17,6 @@ fn main() {
             Some(line) => line, None => return
         };
 
-        println!("{}", rlisp.execute(line.as_slice()));
+        println!("{}", rlisp.execute(&line[..]));
     }
 }

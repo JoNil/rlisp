@@ -9,4 +9,4 @@ path = "../mpc"
 
 [dependencies]
 phf = "*"
-phf_mac = "*"
+phf_macros = "*"

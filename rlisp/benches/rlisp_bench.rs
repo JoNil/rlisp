@@ -1,4 +1,4 @@
-#![allow(unstable)]
+#![feature(test)]
 
 extern crate rlisp;
 extern crate test;

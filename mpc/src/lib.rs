@@ -8,12 +8,11 @@
 extern crate bitflags;
 extern crate libc;
 
-use self::libc::c_char;
 use self::libc::c_int;
 use self::libc::c_void;
 use self::libc::free;
+use std::ffi::CStr;
 use std::ffi::CString;
-use std::ffi;
 use std::mem;
 use std::ptr;
 use std::raw::Slice;
@@ -330,7 +329,7 @@ impl Error {
         unsafe {
             let guard = MPC_GLOBAL_PARSER_LOCK.lock();
             let s = ext_mpc::mpc_err_string(self.error);
-            let res = String::from_utf8_lossy(ffi::c_str_to_bytes_with_nul(&(s as *const c_char))).into_owned();
+            let res = String::from_utf8_lossy(CStr::from_ptr(s).to_bytes_with_nul()).into_owned();
             free(s as *mut c_void);
             res
         }
@@ -446,7 +445,8 @@ pub struct Parser {
 impl Parser {
     #[allow(unused_variables)]
     pub fn new(name: &str) -> Parser {
-        let c_name = CString::from_slice(name.as_bytes());
+        let c_name = CString::new(name).unwrap();
+
         unsafe {
             let guard = MPC_GLOBAL_PARSER_LOCK.lock();
             let ret = ext_mpc::mpc_new(c_name.as_ptr());
@@ -465,8 +465,8 @@ impl Parser {
 
         let ret_code = unsafe {
             let guard = MPC_GLOBAL_PARSER_LOCK.lock();
-            ext_mpc::mpc_parse(CString::from_slice("stdin>".as_bytes()).as_ptr(),
-                               CString::from_slice(input.as_bytes()).as_ptr(),
+            ext_mpc::mpc_parse(CString::new("stdin>").unwrap().as_ptr(),
+                               CString::new(input).unwrap().as_ptr(),
                                self.parser, &mut res)
         };
         
@@ -494,7 +494,7 @@ bitflags! {
 
 #[allow(unused_variables)]
 pub fn lang(flags: LangFlags, language: &str, parsers: &[&mut Parser]) -> Option<Error> {
-    let c_language = CString::from_slice(language.as_bytes());
+    let c_language = CString::new(language).unwrap();
 
     let err: *mut ext_mpc::MpcErr = unsafe {
         let guard = MPC_GLOBAL_PARSER_LOCK.lock();

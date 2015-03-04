@@ -181,7 +181,7 @@ pub fn join(_: Environment, args: &[Cell]) -> Cell {
 
     for arg in args.iter() {
          match arg {
-            &Qexpr(ref v) => res.push_all(v.as_slice()),
+            &Qexpr(ref v) => res.extend(v.clone().into_iter()),
             _             => internal_error(),
          }
     }
@@ -335,9 +335,9 @@ pub fn if_func(env: Environment, args: &[Cell]) -> Cell {
      match args {
         [Bool(cond), _, _] => {
             if cond {
-                eval(env.clone(), args[1..2].as_slice())
+                eval(env.clone(), &args[1..2])
             } else {
-                eval(env.clone(), args[2..3].as_slice())
+                eval(env.clone(), &args[2..3])
             }
         },
         _ => internal_error(),
@@ -346,7 +346,7 @@ pub fn if_func(env: Environment, args: &[Cell]) -> Cell {
 
 pub fn def(env: Environment, args: &[Cell]) -> Cell {
     match args {
-        [Qexpr(ref v), ref b] => match (v.as_slice(), b) {
+        [Qexpr(ref v), ref b] => match (&v[..], b) {
             ([Symbol(ref s)], b) => {
                 env.insert_top(s, b);
                 Nil
@@ -371,7 +371,7 @@ pub fn def(env: Environment, args: &[Cell]) -> Cell {
 
 pub fn set(env: Environment, args: &[Cell]) -> Cell {
     match args {
-        [Qexpr(ref v), ref b] => match v.as_slice() {
+        [Qexpr(ref v), ref b] => match &v[..] {
             [Symbol(ref s)] => {
                 env.insert(s, b);
                 Nil

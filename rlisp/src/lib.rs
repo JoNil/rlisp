@@ -1,18 +1,12 @@
 #![feature(alloc)]
-#![feature(box_syntax)]
+#![feature(box_patterns)]
 #![feature(collections)]
-#![feature(core)]
 #![feature(plugin)]
-#![feature(slicing_syntax)]
+
+#![plugin(phf_macros)]
 
 extern crate mpc;
 extern crate phf;
-
-#[plugin]
-#[no_link]
-extern crate phf_mac;
-
-use std::str::Str;
 
 use cell::{Cell, CurriedBuiltinSpec, LambdaSpec};
 use environment::Environment;
@@ -26,13 +20,13 @@ mod parser;
 mod stdlib;
 mod types;
 
-pub struct Rlisp<'a> {
+pub struct Rlisp {
     parser: Parser,
     environment: Environment,
 }
 
-impl<'a> Rlisp<'a> {
-    pub fn new() -> Rlisp<'a> {
+impl Rlisp {
+    pub fn new() -> Rlisp {
         let mut rlisp = Rlisp {
             parser: Parser::new(),
             environment: Environment::new(),
@@ -54,8 +48,9 @@ fn apply(env: Environment, procedure: &Cell, args: &[Cell]) -> Cell {
     }
     
     let evaled_args = args.iter().map(|a| eval(env.clone(), a)).collect::<Vec<Cell>>();
+    let evaled_args_len = evaled_args.len();
 
-    if let Some(e) = first_error(evaled_args.as_slice()) {
+    if let Some(e) = first_error(&evaled_args[..]) {
          return e.clone();
     }
 
@@ -67,7 +62,7 @@ fn apply(env: Environment, procedure: &Cell, args: &[Cell]) -> Cell {
 
             for (i, arg) in evaled_args.iter().enumerate() {
                 if let Some(&Cell::Symbol(ref s)) = lambda.arguments.get(i) {
-                    match (s.as_slice() == "...", i == lambda.arguments.len() - 1) {
+                    match (&s[..] == "...", i == lambda.arguments.len() - 1) {
                         (true, true)  => { sub_env.insert(s, &Cell::Qexpr(evaled_args[i..].to_vec())); found_elipsis = true; break; },
                         (true, false) => return Cell::Error("Lambda can only have ... as it's last argument".to_string()),
                         (false, _)    => sub_env.insert(s, arg),
@@ -75,41 +70,41 @@ fn apply(env: Environment, procedure: &Cell, args: &[Cell]) -> Cell {
                 }
             }
 
-            if evaled_args.len() == 0 {
+            if evaled_args_len == 0 {
                 if let Some(&Cell::Symbol(ref s)) = lambda.arguments.get(0) {
-                    if s.as_slice() == "..." {
+                    if &s[..] == "..." {
                         sub_env.insert(s, &Cell::Qexpr(Vec::new()));
                         found_elipsis = true;
                     }
                 }
             }
 
-            if evaled_args.len() == lambda.arguments.len() || found_elipsis {
+            if evaled_args_len == lambda.arguments.len() || found_elipsis {
                 eval(sub_env.clone(), &Cell::Sexpr(lambda.body.clone()))
-            } else if evaled_args.len() < lambda.arguments.len() {
-                if evaled_args.len() == 0 {
+            } else if evaled_args_len < lambda.arguments.len() {
+                if evaled_args_len == 0 {
                     Cell::Error(format!("{} got no arguments", procedure))
                 } else {
                     Cell::Lambda(Box::new(LambdaSpec {
-                        arguments:   lambda.arguments[evaled_args.len()..].to_vec(),
+                        arguments:   lambda.arguments[evaled_args_len..].to_vec(),
                         body:        lambda.body.clone(),
                         environment: sub_env.clone(),
                     }))
                 }
             } else {
                 Cell::Error(format!("{} got to many arguments expected {} got {}",
-                                    procedure, lambda.arguments.len(), evaled_args.len()))
+                                    procedure, lambda.arguments.len(), evaled_args_len))
             }
         },
         &Cell::Builtin(builtin) => {
             let arity = types::get_arity(builtin.argument_types);
 
-            if evaled_args.len() as i32 >= arity.requierd {
-                if let Some(e) = types::validate(builtin, evaled_args.as_slice()) {
+            if evaled_args_len as i32 >= arity.requierd {
+                if let Some(e) = types::validate(builtin, &evaled_args[..]) {
                     return Cell::Error(e);
                 }
 
-                (builtin.func)(env, evaled_args.as_slice())
+                (builtin.func)(env, &evaled_args[..])
             } else {
                 Cell::CurriedBuiltin(Box::new(CurriedBuiltinSpec {
                     builtin: builtin,
@@ -120,16 +115,16 @@ fn apply(env: Environment, procedure: &Cell, args: &[Cell]) -> Cell {
         &Cell::CurriedBuiltin(box ref cb) => {
             let arity = types::get_arity(cb.builtin.argument_types);
             let mut evaled_and_bound_args = Vec::new();
-            evaled_and_bound_args.push_all(cb.bound_args.as_slice());
-            evaled_and_bound_args.push_all(evaled_args.as_slice());
+            evaled_and_bound_args.extend(cb.bound_args.clone().into_iter());
+            evaled_and_bound_args.extend(evaled_args);
 
             if evaled_and_bound_args.len() as i32 >= arity.requierd {
-                if let Some(e) = types::validate(cb.builtin, evaled_and_bound_args.as_slice()) {
+                if let Some(e) = types::validate(cb.builtin, &evaled_and_bound_args[..]) {
                     return Cell::Error(e);
                 }
 
-                (cb.builtin.func)(env, evaled_and_bound_args.as_slice())
-            } else if evaled_args.len() == 0 {
+                (cb.builtin.func)(env, &evaled_and_bound_args[..])
+            } else if evaled_args_len == 0 {
                 Cell::Error(format!("{} got no arguments", procedure))
             } else {
                 Cell::CurriedBuiltin(Box::new(CurriedBuiltinSpec {
@@ -144,7 +139,7 @@ fn apply(env: Environment, procedure: &Cell, args: &[Cell]) -> Cell {
 
 fn eval(env: Environment, c: &Cell) -> Cell {
     match c {
-        &Cell::Sexpr(ref v) => match v.as_slice() {
+        &Cell::Sexpr(ref v) => match &v[..] {
             [ref procedure, args..] => {
                 let evaled_procedure = eval(env.clone(), procedure);
 

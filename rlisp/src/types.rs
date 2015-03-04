@@ -1,6 +1,5 @@
+use std::borrow::Cow;
 use std::fmt;
-use std::str::Str as StrTrait;
-use std::string::CowString;
 
 use cell;
 use self::Type::*;
@@ -39,7 +38,7 @@ pub struct Arity {
 }
 
 impl Type {
-    pub fn to_string(&self) -> CowString {
+    pub fn to_string<'a>(&self) -> Cow<'a, str> {
         use std::borrow::Cow::{Borrowed, Owned};
 
         match *self {
@@ -52,11 +51,11 @@ impl Type {
             StringT  => Borrowed("String"),
             SexprT(ref v) => {
                 let mut temp: String = "(".to_string();
-                for i in range(0, v.len()) {
+                for i in 0..v.len() {
                     if i == v.len() - 1 {
-                        temp.push_str(format!("{}", v[i]).as_slice());
+                        temp.push_str(&format!("{}", v[i])[..]);
                     } else {
-                        temp.push_str(format!("{} ", v[i]).as_slice());
+                        temp.push_str(&format!("{} ", v[i])[..]);
                     }
                 }
                 temp.push_str(")");
@@ -64,11 +63,11 @@ impl Type {
             },
             QexprT(ref v) => {
                 let mut temp: String = "{".to_string();
-                for i in range(0, v.len()) {
+                for i in 0..v.len() {
                     if i == v.len() - 1 {
-                        temp.push_str(format!("{}", v[i]).as_slice());
+                        temp.push_str(&format!("{}", v[i])[..]);
                     } else {
-                        temp.push_str(format!("{} ", v[i]).as_slice());
+                        temp.push_str(&format!("{} ", v[i])[..]);
                     }
                 }
                 temp.push_str("}");
@@ -76,11 +75,11 @@ impl Type {
             },
             RSexprT(ref v) => {
                 let mut temp: String = "(".to_string();
-                for i in range(0, v.len()) {
+                for i in 0..v.len() {
                     if i == v.len() - 1 {
-                        temp.push_str(format!("{}", v[i]).as_slice());
+                        temp.push_str(&format!("{}", v[i])[..]);
                     } else {
-                        temp.push_str(format!("{} ", v[i]).as_slice());
+                        temp.push_str(&format!("{} ", v[i])[..]);
                     }
                 }
                 temp.push_str(")");
@@ -88,11 +87,11 @@ impl Type {
             },
             RQexprT(ref v) => {
                 let mut temp: String = "{".to_string();
-                for i in range(0, v.len()) {
+                for i in 0..v.len() {
                     if i == v.len() - 1 {
-                        temp.push_str(format!("{}", v[i]).as_slice());
+                        temp.push_str(&format!("{}", v[i])[..]);
                     } else {
-                        temp.push_str(format!("{} ", v[i]).as_slice());
+                        temp.push_str(&format!("{} ", v[i])[..]);
                     }
                 }
                 temp.push_str("}");
@@ -167,22 +166,22 @@ fn validate_inner(argument_types: &[Type], args: &[cell::Cell]) -> Option<String
 
         match (arg, arg_type) {
             (&cell::Cell::Sexpr(ref v), &SexprT(ref vt)) => {
-                if let Some(e) = validate_inner(vt.as_slice(), v.as_slice()) {
+                if let Some(e) = validate_inner(&vt[..], &v[..]) {
                     return Some(format!("argument list at {}: {}", i+1, e));
                 }
             },
             (&cell::Cell::Sexpr(ref v), &RSexprT(ref vt)) => {
-                if let Some(e) = validate_inner(vt.as_slice(), v.as_slice()) {
+                if let Some(e) = validate_inner(&vt[..], &v[..]) {
                     return Some(format!("argument list at {}: {}", i+1, e));
                 }
             },
             (&cell::Cell::Qexpr(ref v), &QexprT(ref vt)) => {
-                if let Some(e) = validate_inner(vt.as_slice(), v.as_slice()) {
+                if let Some(e) = validate_inner(&vt[..], &v[..]) {
                     return Some(format!("argument list at {}: {}", i+1, e));
                 }
             },
             (&cell::Cell::Qexpr(ref v), &RQexprT(ref vt)) => {
-                if let Some(e) = validate_inner(vt.as_slice(), v.as_slice()) {
+                if let Some(e) = validate_inner(&vt[..], &v[..]) {
                     return Some(format!("argument list at {}: {}", i+1, e));
                 }
             },
@@ -227,7 +226,7 @@ fn validate_inner(argument_types: &[Type], args: &[cell::Cell]) -> Option<String
 }
 
 pub fn validate(f: &cell::BuiltinFunctionSpec, args: &[cell::Cell]) -> Option<String> {
-    match validate_inner(f.argument_types.as_slice(), args) {
+    match validate_inner(&f.argument_types[..], args) {
         Some(e) => Some(format!("{}, {}", f.name, e)),
         None    => None,
     }

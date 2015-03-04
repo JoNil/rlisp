@@ -30,13 +30,13 @@ impl Environment {
         })))
     }
 
-    pub fn lookup(&self, key: &String) -> Cell {
+    pub fn lookup(&self, key: &str) -> Cell {
         let &Environment(ref env) = self;
         match (env.borrow().table.get(key), &env.borrow().enclosing) {
             (Some(c), _)         => c.clone(),
             (None, &Some(ref e)) => Environment(e.upgrade().expect("Internal error")).lookup(key),
             (None, &None)        => {
-                match globals::GLOBAL_ENVIROMENT.get(key.as_slice()) {
+                match globals::GLOBAL_ENVIROMENT.get(key) {
                     Some(bfs) => Cell::Builtin(bfs),
                     None      => Cell::Error(format!("Undefined symbol: {}", key))
                 }
@@ -44,17 +44,17 @@ impl Environment {
         }
     }
 
-    pub fn insert(&self, key: &String, c: &Cell) {
+    pub fn insert(&self, key: &str, c: &Cell) {
         let &Environment(ref env) = self;
-        env.borrow_mut().table.insert(key.clone(), c.clone());
+        env.borrow_mut().table.insert(key.to_string(), c.clone());
     }
 
-    pub fn insert_top(&self, key: &String, c: &Cell) {
+    pub fn insert_top(&self, key: &str, c: &Cell) {
         let &Environment(ref env) = self;
         let enclosing = env.borrow().enclosing.clone();
         match enclosing {
             Some(ref e) => Environment(e.upgrade().expect("Internal error")).insert_top(key, c),
-            None        => { env.borrow_mut().table.insert(key.clone(), c.clone()); },
+            None        => { env.borrow_mut().table.insert(key.to_string(), c.clone()); },
         };
     }
 }

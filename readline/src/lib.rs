@@ -1,15 +1,12 @@
-#![feature(core)]
 #![feature(libc)]
-#![feature(slicing_syntax)]
 #![feature(std_misc)]
 
 extern crate libc;
 
-use self::libc::c_char;
 use self::libc::c_void;
 use self::libc::free;
+use std::ffi::CStr;
 use std::ffi::CString;
-use std::ffi;
 
 mod ext_readline {
     use super::libc::c_char;
@@ -20,7 +17,7 @@ mod ext_readline {
 }
 
 pub fn read(prompt: &str) -> Option<String> {
-    let cprmt = CString::from_slice(prompt.as_bytes());
+    let cprmt = CString::new(prompt).unwrap();
     unsafe {
         let ret = ext_readline::readline(cprmt.as_ptr());
         if ret.is_null() {
@@ -28,7 +25,7 @@ pub fn read(prompt: &str) -> Option<String> {
         }
         else {
             ext_readline::add_history(ret);
-            let res = String::from_utf8_lossy(ffi::c_str_to_bytes(&(ret as *const c_char))).into_owned();
+            let res = String::from_utf8_lossy(CStr::from_ptr(ret).to_bytes()).into_owned();
             free(ret as *mut c_void);
             Some(res)
         }
