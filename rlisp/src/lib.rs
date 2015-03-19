@@ -1,6 +1,5 @@
 #![feature(alloc)]
 #![feature(box_patterns)]
-#![feature(collections)]
 #![feature(plugin)]
 
 #![plugin(phf_macros)]

@@ -119,7 +119,7 @@ fn parse_ast(ast: &mpc::Ast) -> Option<Cell> {
 
     if tag.find("char").is_some() {
         let s = ast.get_contents();
-        return Some(Cell::Char(s.char_at(0)));
+        return Some(Cell::Char(s.chars().next().expect("Internal parse error")));
     }
 
     if tag.find("bool").is_some() {
