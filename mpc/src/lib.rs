@@ -1,8 +1,9 @@
 #![allow(dead_code)]
 
-#![feature(core)]
 #![feature(libc)]
-#![feature(std_misc)]
+#![feature(ptr_as_ref)]
+#![feature(raw)]
+#![feature(static_mutex)]
 
 #[macro_use]
 extern crate bitflags;

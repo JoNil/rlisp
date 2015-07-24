@@ -1,6 +1,6 @@
-#![feature(alloc)]
 #![feature(box_patterns)]
 #![feature(plugin)]
+#![feature(rc_weak)]
 #![feature(slice_patterns)]
 
 #![plugin(phf_macros)]
