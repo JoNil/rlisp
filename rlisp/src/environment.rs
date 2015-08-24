@@ -26,7 +26,7 @@ impl Environment {
         let &Environment(ref env) = self;
         Environment(Rc::new(RefCell::new(EnvironmentImpl {
             table:     HashMap::new(),
-            enclosing: Some(env.downgrade()),
+            enclosing: Some(Rc::downgrade(&env)),
         })))
     }
 
